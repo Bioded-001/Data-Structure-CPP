@@ -1,0 +1,8 @@
+Movie Name     - Puss In Boots: The Last Wish
+Genre          - Comedy, Animation, Adventure
+Running Time   - 1 hr 45 mins
+Classification - P13
+Synopsis       - Puss in Boots discovers that his passion for adventure has taken its toll: 
+                 he has burned through eight of his nine lives. Puss sets out on an epic 
+                 journey to find the mythical Last Wish and restore his nine lives.
+

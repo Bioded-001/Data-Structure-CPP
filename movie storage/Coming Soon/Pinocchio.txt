@@ -1,0 +1,8 @@
+Movie Name     - Pinocchio
+Release Date   - 12 January 2023
+Genre          - Comedy, Adventure, Fantasy
+Running Time   - 1 hr 57 mins
+Classification - P13
+Synopsis       - Geppetto, a kind and elderly, yet lonely Italian woodcarver and toymaker who builds
+                 and raises Pinocchio as if he were his real son and dearly wishes for him to become 
+                 a real boy. Geppetto created him out of grief for the death of his young son.

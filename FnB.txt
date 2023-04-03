@@ -1,0 +1,30 @@
+Large e-Combo 1: 1x Caramel Popcorn LARGE, 1x Soft Drinks LARGE
+18.5 100
+Caramel Popcorn Large
+16 97
+Caramel Popcorn Small
+9 100
+Caramel Popcorn Regular
+12 100
+Nugget Small
+9.5 90
+Soft Drink Regular
+6 100
+Soft Drink Large
+7 100
+Mineral Water
+4 100
+Early Bird Combo : 1x Small Caramel Popcorn, 1x Mineral Water
+18 100
+Happy Tuesday : 1x Samll Caramel Popcorn, 1x Small Soft Drink
+13 100
+Couple Combo : 1x Large Caramel Popcorn, 2x Regular Soft Drink
+25 100
+Single Combo : 1x Regular Caramel Popcorn, 1x Regular Soft Drink, 1x Nugget
+20 100
+Signature Combo : 1x Large Caramel Popcorn Combo, 1x Large Soft Drink
+18.5 100
+Family Combo : 2x Large Caramel Popcorn, 2x Mineral Water, 2x Nugget
+45 100
+Limited Time Combo : 1x Sweet Potato Ball, 1x Regular Soft Drink or Mineral Water
+12 97

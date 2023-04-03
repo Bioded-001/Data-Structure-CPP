@@ -1,0 +1,14 @@
+=====================================================
+|||                     BILL                      |||
+=====================================================
+Set 1    : Nugget Small
+Quantity : 10
+Price    : RM95.00
+Set 2    : Caramel Popcorn Large
+Quantity : 3
+Price    : RM48.00
+Set 3    : Limited Time Combo : 1x Sweet Potato Ball, 1x Regular Soft Drink or Mineral Water
+Quantity : 3
+Price    : RM36.00
+-------------------------------------------------------- 
+Total Price				 : RM179.00

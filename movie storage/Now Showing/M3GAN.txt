@@ -1,0 +1,9 @@
+Movie Name     - M3GAN
+Genre          - Horror, Science Fiction, Thriller
+Running Time   - 1 hr 42 mins
+Classification - P18
+Synopsis       - Gemma is a brilliant roboticist at a toy company who uses artificial intelligence
+                 to develop M3GAN, a life-like doll programmed to be a kid`s greatest companion and
+                 a parent`s greatest ally. After unexpectedly gaining custody of her orphaned niece,
+                 Gemma enlists the help of the M3GAN prototype - a decision that has unimaginable 
+                 consequences.

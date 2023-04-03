@@ -1,0 +1,10 @@
+Movie Name     - Ticket to Paradise
+Release Date   - 2 January 2023
+Genre          - Comedy, Romance
+Running Time   - 1 hr 45 mins
+Classification - P13
+Synopsis       - A man and his ex-wife race to Bali, Indonesia, to stop their daughter from 
+                 marrying a seaweed farmer. As they desperately try to sabotage the wedding,
+                 the bickering duo soon find themselves rekindling old feelings that once 
+                 made them happy together.
+

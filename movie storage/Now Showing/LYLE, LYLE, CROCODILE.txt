@@ -1,0 +1,9 @@
+Movie Name     - LYLE, LYLE, CROCODILE
+Genre          - Comedy, Musical
+Running Time   - 1 hr 45 mins
+Classification - P13
+Synopsis       - Based on the famous children`s book of the same name, Lyle is a 
+                 crocodile living in New York City who is beloved by almost everyone 
+                 in his neighbourhood. The one outsider is Mr Grumps, who hates Lyle 
+                 and thinks he belongs in a zoo. Lyle does his best to win Mr Grumps 
+                 over and befriend him.

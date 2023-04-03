@@ -1,0 +1,9 @@
+Movie Name     - Smile
+Release Date   - 11 January 2023
+Genre          - Horror, Pyschological Horror
+Running Time   - 1 hr 55 mins
+Classification - P18
+Synopsis       - After witnessing a bizarre, traumatic incident involving a patient, Dr. Rose Cotter starts
+                 experiencing frightening occurrences that she can't explain. As an overwhelming terror begins
+                 taking over her life, Rose must confront her troubling past in order to survive and escape 
+                 her horrifying new reality.
