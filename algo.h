@@ -10,38 +10,65 @@
 #include<unistd.h>
 #include<ctime>
 #include<cctype>
-#include <stack>
 #include <chrono>
 using namespace std;
 // Here is stack
 struct Session {
-    std::chrono::system_clock::time_point start_time;
-    std::chrono::system_clock::time_point end_time;
-    std::chrono::seconds duration;
+    long long start_time;
+    long long end_time;
+    long long duration;
 };
-std::stack<Session> session_stack;
-void stack_login()
-{
-    Session session;
-    session.start_time = std::chrono::system_clock::now();
-    session_stack.push(session);
-}
-void stack_logout()
-{
-    Session& current_session = session_stack.top();
-    current_session.end_time = std::chrono::system_clock::now();
-    current_session.duration = std::chrono::duration_cast<std::chrono::seconds>(current_session.end_time - current_session.start_time);
-    session_stack.pop();
-    std::cout << "The duration time you use is : " << current_session.duration.count() << " seconds\n";
-}
+
+class SessionStack {
+private:
+    static const int MAX_SIZE = 100;
+    Session sessions[MAX_SIZE];
+    int top_index;
+
+public:
+    SessionStack() : top_index(-1) {}
+
+    void stack_login()
+    {
+        if (top_index == MAX_SIZE - 1) {
+            std::cout << "Session stack is full.\n";
+            return;
+        }
+
+        Session session;
+        session.start_time = get_current_time();
+        sessions[++top_index] = session;
+    }
+
+    void stack_logout()
+    {
+        if (top_index == -1) {
+            std::cout << "No active session.\n";
+            return;
+        }
+
+        Session& current_session = sessions[top_index];
+        current_session.end_time = get_current_time();
+        current_session.duration = current_session.end_time - current_session.start_time;
+        top_index--;
+
+        std::cout << "The duration time you used is: " << current_session.duration << " seconds\n";
+    }
+
+private:
+    long long get_current_time() const
+    {
+        using namespace std::chrono;
+        return duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
+    }
+}stack;
 // Here is stack
 // Here is selectionSort
-void selectionSort(vector<string>& result) {
-    int n = result.size();
+void selectionSort(string* result, int size) {
     int i, j, min_idx;
-    for (i = 0; i < n - 1; i++) {
+    for (i = 0; i < size - 1; i++) {
         min_idx = i;
-        for (j = i + 1; j < n; j++) {
+        for (j = i + 1; j < size; j++) {
             if (result[j][0] < result[min_idx][0]) {
                 min_idx = j;
             }
@@ -49,9 +76,10 @@ void selectionSort(vector<string>& result) {
         swap(result[min_idx], result[i]);
     }
 }
+
 // Here is selectionSort
 // Here is hashSearch
-void hashSearch(string& find, vector<string>& data, vector<string>& result)
+void hashSearch(string& find, string* data, int dataSize, string* result, int & resultSize)
 {
     // Initialize hash function
     std::hash<std::string> strHash;
@@ -60,10 +88,10 @@ void hashSearch(string& find, vector<string>& data, vector<string>& result)
     transform(find.begin(), find.end(), find.begin(), [](unsigned char c){ return tolower(c); });
 
     // Loop through the data array and find similar strings
-    for (const auto& str : data)
+    for (int i = 0; i < dataSize; i++)
     {
         // Convert the current string to lowercase
-        string strLower = str;
+        string strLower = data[i];
         transform(strLower.begin(), strLower.end(), strLower.begin(), [](unsigned char c){ return tolower(c); });
 
         // Generate hash value of current string
@@ -72,62 +100,70 @@ void hashSearch(string& find, vector<string>& data, vector<string>& result)
         // Compare hash values and check if the current string contains the find string as a substring
         if (strHashVal == strHash(find) || strLower.find(find) != string::npos)
         {
-            // If hash values match or the current string contains the find string, add the string to the result vector
-            result.push_back(str);
+            // If hash values match or the current string contains the find string, add the string to the result array
+            result[resultSize] = data[i];
+            resultSize++;
         }
     }
 }
-// Here is 
 
-void search_for_ns(string find)
-{
+// Here is hashSearch
+
+
+void search_for_ns(const string& find) {
     // Test data
-    fstream movie_searching_File;
-    movie_searching_File.open("Now Showing Movie Name.txt", ios::in);
-    vector<string> movie_names;
+    ifstream movie_searching_File("Now Showing Movie Name.txt");
+    if (!movie_searching_File) {
+        cout << "Failed to open Now Showing Movie Name.txt" << endl;
+        return;
+    }
+
+    string movie_names;
     string line;
     while (getline(movie_searching_File, line)) {
-        movie_names.push_back(line);
+        movie_names.append(line);
+        movie_names.append("\n");
     }
     movie_searching_File.close();
-    vector<string> result;
+
+    int resultSize = 0;
+    string result[100]; // Adjust the size as per your requirement
     string movie_detail;
+
     // Search for similar strings using hash search algorithm
-    hashSearch(find, movie_names, result);
-    selectionSort(result);
+    hashSearch(find, movie_names.c_str(), movie_names.size(), result, resultSize);
+    selectionSort(result, resultSize);
+
     // Display the result
-    if (!result.empty())
-    {
-        for (const auto& str : result)
-        {
-            movie_searching_File.open(("movie storage/Now Showing/" + str + ".txt").c_str(), ios::in);
-            do{
-                getline(movie_searching_File, movie_detail);
-                cout<<movie_detail<<endl;
-            }while(!movie_searching_File.eof());
-            cout<<endl<<endl;
-            movie_searching_File.close();
+    if (resultSize > 0) {
+        for (int i = 0; i < resultSize; i++) {
+            ifstream movie_detail_File(("movie storage/Now Showing/" + result[i] + ".txt").c_str());
+            if (movie_detail_File) {
+                while (getline(movie_detail_File, movie_detail)) {
+                    cout << movie_detail << endl;
+                }
+                movie_detail_File.close();
+                cout << endl << endl;
+            }
         }
+    } else {
+        cout << "No matches found." << endl;
     }
-    else
-    {
-        cout << "No found." << endl;
-    }
-    
 }
+
 
 void search_for_cs(string find)
 {
     // Test data
     fstream movie_searching_File;
     movie_searching_File.open("Coming Soon Movie Name.txt", ios::in);
-    vector<string> movie_names;
+    string movie_names;
     string line;
     while (getline(movie_searching_File, line)) {
         movie_names.push_back(line);
     }
     movie_searching_File.close();
-    vector<string> result;
+    string result;
     string movie_detail;
     // Search for similar strings using hash search algorithm
     hashSearch(find, movie_names, result);
@@ -151,7 +187,6 @@ void search_for_cs(string find)
     {
         cout << "No found." << endl;
     }
-    
 }
 
 bool movie_searching_for_now_showing(string movie_searching_name)

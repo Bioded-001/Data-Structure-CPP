@@ -111,7 +111,7 @@ class Member
     void user_select_menu()
     {
         char conti_or_not;
-        stack_login();
+        stack.stack_login();
         bool data_edit = true;
         do{
             Invalid_sel:
@@ -187,7 +187,7 @@ class Member
             fflush(stdin);
         }while(toupper(conti_or_not)=='Y');
         endloop:;
-        stack_logout();
+        stack.stack_logout();
     }
     bool edit_member()
     {

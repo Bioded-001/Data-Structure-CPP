@@ -2,7 +2,7 @@
 void selectpage(string name)//page for user to proceed after choose guest mode
 {
     char conti_or_not;
-    stack_login();
+    stack.stack_login();
     do{
         Invalid_sel:
         system("cls");
@@ -65,7 +65,7 @@ void selectpage(string name)//page for user to proceed after choose guest mode
         fflush(stdin);
     }while(toupper(conti_or_not)=='Y');
     endloop:;
-    stack_logout();
+    stack.stack_logout();
 }
 void guest()//select guest mode
 {

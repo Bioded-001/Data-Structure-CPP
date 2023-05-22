@@ -125,7 +125,7 @@ class Admin_mode : protected Movie_management, protected Food_and_Beverage_manag
     }
     int Admin_mode_menu()
     {
-        stack_login();
+        stack.stack_login();
         admin_menu:
         fflush(stdin);
         string select;
@@ -173,7 +173,7 @@ class Admin_mode : protected Movie_management, protected Food_and_Beverage_manag
         }
         else if(select=="Exit"||select=="exit"||select=="6")
         {
-            stack_logout();
+            stack.stack_logout();
             return 0;
         }
         else if(select=="Add New Admin In System"||select=="add new admin in system"||select=="7"&&ADM=="SA")
