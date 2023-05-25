@@ -108,39 +108,36 @@ void hashSearch(string& find, string* data, int dataSize, string* result, int & 
 }
 
 // Here is hashSearch
+const int MAX_SIZE = 100; 
 
 
-void search_for_ns(const string& find) {
-    // Test data
+void search_for_ns(string& find) {
     ifstream movie_searching_File("Now Showing Movie Name.txt");
     if (!movie_searching_File) {
         cout << "Failed to open Now Showing Movie Name.txt" << endl;
         return;
     }
 
-    string movie_names;
+    string data[MAX_SIZE];
+    int dataSize = 0;
     string line;
-    while (getline(movie_searching_File, line)) {
-        movie_names.append(line);
-        movie_names.append("\n");
+    while (getline(movie_searching_File, line) && dataSize < MAX_SIZE) {
+        data[dataSize++] = line;
     }
     movie_searching_File.close();
 
     int resultSize = 0;
-    string result[100]; // Adjust the size as per your requirement
-    string movie_detail;
+    string result[MAX_SIZE];
 
-    // Search for similar strings using hash search algorithm
-    hashSearch(find, movie_names.c_str(), movie_names.size(), result, resultSize);
+    hashSearch(find, data, dataSize, result, resultSize);
     selectionSort(result, resultSize);
 
-    // Display the result
     if (resultSize > 0) {
         for (int i = 0; i < resultSize; i++) {
-            ifstream movie_detail_File(("movie storage/Now Showing/" + result[i] + ".txt").c_str());
+            ifstream movie_detail_File("movie storage/Now Showing/" + result[i] + ".txt");
             if (movie_detail_File) {
-                while (getline(movie_detail_File, movie_detail)) {
-                    cout << movie_detail << endl;
+                while (getline(movie_detail_File, line)) {
+                    cout << line << endl;
                 }
                 movie_detail_File.close();
                 cout << endl << endl;
@@ -151,41 +148,40 @@ void search_for_ns(const string& find) {
     }
 }
 
+void search_for_cs(string& find) {
+    ifstream movie_searching_File("Coming Soon Movie Name.txt");
+    if (!movie_searching_File) {
+        cout << "Failed to open Coming Soon Movie Name.txt" << endl;
+        return;
+    }
 
-void search_for_cs(string find)
-{
-    // Test data
-    fstream movie_searching_File;
-    movie_searching_File.open("Coming Soon Movie Name.txt", ios::in);
-    string movie_names;
+    string data[MAX_SIZE];
+    int dataSize = 0;
     string line;
-    while (getline(movie_searching_File, line)) {
-        movie_names.push_back(line);
+    while (getline(movie_searching_File, line) && dataSize < MAX_SIZE) {
+        data[dataSize++] = line;
     }
     movie_searching_File.close();
-    string result;
-    string movie_detail;
-    // Search for similar strings using hash search algorithm
-    hashSearch(find, movie_names, result);
-    selectionSort(result);
 
-    // Display the result
-    if (!result.empty())
-    {
-        for (const auto& str : result)
-        {
-            movie_searching_File.open(("movie storage/Coming Soon/" + str + ".txt").c_str(), ios::in);
-            do{
-                getline(movie_searching_File, movie_detail);
-                cout<<movie_detail<<endl;
-            }while(!movie_searching_File.eof());
-            cout<<endl<<endl;
-            movie_searching_File.close();
+    int resultSize = 0;
+    string result[MAX_SIZE];
+
+    hashSearch(find, data, dataSize, result, resultSize);
+    selectionSort(result, resultSize);
+
+    if (resultSize > 0) {
+        for (int i = 0; i < resultSize; i++) {
+            ifstream movie_detail_File("movie storage/Coming Soon/" + result[i] + ".txt");
+            if (movie_detail_File) {
+                while (getline(movie_detail_File, line)) {
+                    cout << line << endl;
+                }
+                movie_detail_File.close();
+                cout << endl << endl;
+            }
         }
-    }
-    else
-    {
-        cout << "No found." << endl;
+    } else {
+        cout << "No matches found." << endl;
     }
 }
 
