@@ -79,14 +79,16 @@ void selectionSort(string* result, int size) {
 
 // Here is selectionSort
 // Here is hashSearch
+size_t stringHash(const string& str) {
+    size_t hashValue = 0;
+    for (char c : str) {
+        hashValue += c;
+    }
+    return hashValue;
+}
+
 void hashSearch(string& find, string* data, int dataSize, string* result, int & resultSize)
 {
-    // Initialize hash function
-    std::hash<std::string> strHash;
-
-    // Convert the find string to lowercase
-    transform(find.begin(), find.end(), find.begin(), [](unsigned char c){ return tolower(c); });
-
     // Loop through the data array and find similar strings
     for (int i = 0; i < dataSize; i++)
     {
@@ -95,10 +97,10 @@ void hashSearch(string& find, string* data, int dataSize, string* result, int & 
         transform(strLower.begin(), strLower.end(), strLower.begin(), [](unsigned char c){ return tolower(c); });
 
         // Generate hash value of current string
-        size_t strHashVal = strHash(strLower);
+        size_t strHashVal = stringHash(strLower);
 
         // Compare hash values and check if the current string contains the find string as a substring
-        if (strHashVal == strHash(find) || strLower.find(find) != string::npos)
+        if (strHashVal == stringHash(find) || strLower.find(find) != string::npos)
         {
             // If hash values match or the current string contains the find string, add the string to the result array
             result[resultSize] = data[i];
@@ -107,11 +109,11 @@ void hashSearch(string& find, string* data, int dataSize, string* result, int & 
     }
 }
 
+
 // Here is hashSearch
 const int MAX_SIZE = 100; 
 
-
-void search_for_ns(string& find) {
+void search_for_ns(string find) {
     ifstream movie_searching_File("Now Showing Movie Name.txt");
     if (!movie_searching_File) {
         cout << "Failed to open Now Showing Movie Name.txt" << endl;
@@ -148,7 +150,7 @@ void search_for_ns(string& find) {
     }
 }
 
-void search_for_cs(string& find) {
+void search_for_cs(string find) {
     ifstream movie_searching_File("Coming Soon Movie Name.txt");
     if (!movie_searching_File) {
         cout << "Failed to open Coming Soon Movie Name.txt" << endl;
