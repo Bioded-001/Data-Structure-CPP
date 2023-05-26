@@ -11,11 +11,11 @@ void selectpage(string name)//page for user to proceed after choose guest mode
         cout<<"Welcome, "<<name<<endl;
         cout<<"..............................M E N U.............................."<<endl;
         cout<<"1. View movies"<<endl;
-        cout<<"2. Order snack & beverages"<<endl;
-        cout<<"3. Search movies for Coming Soon"<<endl;
-        cout<<"4. Search movies for Now Showing"<<endl;
-        cout<<"5. Recommendation"<<endl;
-        cout<<"6. Exit"<<endl;
+        /*cout<<"2. Order snack & beverages"<<endl;*/
+        cout<<"2. Search movies for Coming Soon"<<endl;
+        cout<<"3. Search movies for Now Showing"<<endl;
+        cout<<"4. Recommendation"<<endl;
+        cout<<"5. Exit"<<endl;
         cout<<"\nPlease enter select : ";
         cin>>user_s;
         fflush(stdin);
@@ -33,9 +33,9 @@ void selectpage(string name)//page for user to proceed after choose guest mode
         system("cls");
         if(user_s=="1")
             access_movie(false);
+        /*else if(user_s=="2")
+            access_FnB(false);*/
         else if(user_s=="2")
-            access_FnB(false);
-        else if(user_s=="3")
         {
             cout<<"\nWhat is the movie name you want to search "<<endl;
             getline(cin, mavie_name);
@@ -43,7 +43,7 @@ void selectpage(string name)//page for user to proceed after choose guest mode
             system("pause");
             system("cls");
         }
-        else if(user_s=="4")
+        else if(user_s=="3")
         {
             cout<<"\nWhat is the movie name you want to search "<<endl;
             getline(cin, mavie_name);
@@ -51,9 +51,9 @@ void selectpage(string name)//page for user to proceed after choose guest mode
             system("pause");
             system("cls");
         }
-        else if(user_s=="5")
+        else if(user_s=="4")
             recommendation();
-        else if(user_s=="6")
+        else if(user_s=="5")
             goto endloop;
         else
             cout<<"Invalid selection ! Please select again"<<endl;

@@ -489,7 +489,7 @@ void access_movie(bool discount)
 	delete movie;
     system("pause");
     system("cls");
-}
+}/*
 //food & beverage ordering
 struct Fnb_in_storage
 {
@@ -720,3 +720,4 @@ void access_FnB(bool discount)
 	system("pause");
 	system("cls");
 }
+*/

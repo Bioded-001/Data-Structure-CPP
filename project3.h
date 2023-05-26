@@ -144,8 +144,8 @@ class Member
             system("cls");
             if(user_s=="1")
                 access_movie(true);
-            else if(user_s=="2")
-                access_FnB(true);
+            /*else if(user_s=="2")
+                access_FnB(true);*/
             else if(user_s=="3")
             {
                 cout<<"\nWhat is the movie name you want to search "<<endl;
