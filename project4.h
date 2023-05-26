@@ -82,6 +82,9 @@ void view_member()
         LinkedQueue memberQueue; // Create a LinkedQueue object to store member information
         string line;
         while (getline(cusfile, line)) {
+            if (line.empty()) {
+                continue;
+            }
             Member_st* newMember = new Member_st;
             newMember->mem_name = line;
 
@@ -95,7 +98,6 @@ void view_member()
             newMember->mem_password = line;
 
             memberQueue.enqueue(newMember); // Enqueue member
-            i++;
         }
 
         cusfile.close();
@@ -105,7 +107,6 @@ void view_member()
             cout << "No member information available." << endl;
         } else {
             cout << "-----------------------------------------------------------------------------------Member Information-----------------------------------------------------------------------------------" << endl;
-            i = 1;
             while (!memberQueue.isEmpty()) {
                 Member_st* member = memberQueue.getFront();
                 cout << i << ". Member Name : " << left << setw(nameWidth) << member->mem_name;
@@ -113,12 +114,12 @@ void view_member()
                 cout << "| Member Email : " << left << setw(nameWidth) << member->mem_email;
                 cout << "| Member Password : " << member->mem_password << endl;
                 memberQueue.dequeue();
-                delete member;
                 i++;
             }
         }
     }
 }
+
 
 
 class Admin_mode : protected Movie_management, protected Food_and_Beverage_management
