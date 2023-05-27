@@ -113,82 +113,79 @@ class Member
         char conti_or_not;
         stack.stack_login();
         bool data_edit = true;
-        do{
-            Invalid_sel:
+
+        do {
             system("cls");
             string user_s;
-            string mavie_name;
-            cout<<"Welcome, "<<log_name<<endl;
-            cout<<"..............................M E N U.............................."<<endl;
-            cout<<"1. View movies"<<endl;
-            cout<<"2. Order snack & beverages"<<endl;
-            cout<<"3. Search movies for Coming Soon"<<endl;
-            cout<<"4. Search movies for Now Showing"<<endl;
-            cout<<"5. Edit Personal Detail"<<endl;
-            cout<<"6. Recommendation"<<endl;
-            cout<<"7. Exit"<<endl;
-            cout<<"\nPlease enter select : ";
-            cin>>user_s;
+            string movie_name;
+
+            cout << "Welcome, " << log_name << endl;
+            cout << ".............................. M E N U .............................." << endl;
+            cout << "1. View movies" << endl;
+            /*cout<<"2. Order snack & beverages"<<endl;*/
+            cout << "2. Search movies for Coming Soon" << endl;
+            cout << "3. Search movies for Now Showing" << endl;
+            cout << "4. Edit Personal Detail" << endl;
+            //cout<<"5. Recommendation"<<endl;
+            cout << "5. Exit" << endl;
+            cout << "\nPlease enter your selection: ";
+            cin >> user_s;
             fflush(stdin);
-            if(user_s!="1"&&user_s!="2"&&user_s!="3"&&user_s!="4"&&user_s!="5"&&user_s!="6"&&user_s!="7")
-            {
-                user_s="0";
-            }
-            cout<<"\nLoading..";
-            for(int i=0;i<2;i++)
-            {
+
+            cout << "\nLoading...";
+            for (int i = 0; i < 2; i++) {
                 sleep(1);
-                cout<<"..";
+                cout << "..";
             }
-            cout<<"\n\n";
+            cout << "\n\n";
             system("cls");
-            if(user_s=="1")
+
+            if (user_s == "1")
                 access_movie(true);
             /*else if(user_s=="2")
                 access_FnB(true);*/
-            else if(user_s=="3")
-            {
-                cout<<"\nWhat is the movie name you want to search "<<endl;
-                getline(cin, mavie_name);
-                search_for_cs(mavie_name);//pass movie name
+            else if (user_s == "2") {
+                cout << "\nWhat is the movie name you want to search?" << endl;
+                cin.ignore();
+                getline(cin, movie_name);
+                search_for_movies("Coming Soon Movie Name.txt", "movie storage/Coming Soon/", movie_name);
                 system("pause");
                 system("cls");
             }
-            else if(user_s=="4")
-            {
-                cout<<"\nWhat is the movie name you want to search "<<endl;
-                getline(cin, mavie_name);
-                search_for_ns(mavie_name);//pass movie name
+            else if (user_s == "3") {
+                cout << "\nWhat is the movie name you want to search?" << endl;
+                cin.ignore();
+                getline(cin, movie_name);
+                search_for_movies("Now Showing Movie Name.txt", "movie storage/Now Showing/", movie_name);
                 system("pause");
                 system("cls");
             }
-            else if(user_s=="5")
-            {
-                if(data_edit)
-                    {
-                        data_edit = edit_member();
-                    }    
-                    else
-                    {
-                        cout<<"\nUser, you just edited your Personal Detail recently.\n";
-                        cout<<"\nYou can only edit your data next time you login.\n";
-                    }
+            else if (user_s == "4") {
+                if (data_edit) {
+                    data_edit = edit_member();
+                }
+                else {
+                    cout << "\nUser, you have just edited your Personal Detail recently.\n";
+                    cout << "\nYou can only edit your data next time you log in.\n";
+                }
             }
-            else if(user_s=="6")
-                recommendation();
-            else if(user_s=="7")
-                goto endloop;
-            else
-                cout<<"Invalid selection ! Please select again"<<endl;
+            /*else if(user_s=="5")
+                recommendation();*/
+            else if (user_s == "5")
+                break;
+            else {
+                cout << "Invalid selection! Please select again." << endl;
                 system("pause");
-                goto Invalid_sel;
-            cout<<"\ndo you want continue user mode ? [Y/N]:\n";
-            cin>>conti_or_not;
+            }
+
+            cout << "\nDo you want to continue in user mode? [Y/N]: ";
+            cin >> conti_or_not;
             fflush(stdin);
-        }while(toupper(conti_or_not)=='Y');
-        endloop:;
+        } while (toupper(conti_or_not) == 'Y');
+
         stack.stack_logout();
     }
+
     bool edit_member()
     {
         bool change=false;

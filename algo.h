@@ -11,8 +11,9 @@
 #include<ctime>
 #include<cctype>
 #include <chrono>
+#include <vector>
 using namespace std;
-// Here is stack
+// Stack
 struct Session {
     long long start_time;  // The start time of the session
     long long end_time;    // The end time of the session
@@ -21,279 +22,225 @@ struct Session {
 
 class SessionStack {
 private:
-    static const int MAX_SIZE = 100;  // The maximum size of the stack
-    Session sessions[MAX_SIZE];       // The array to store the sessions
-    int top_index;                    // The index of the top of the stack
+    vector<Session> sessions;  // The vector to store the sessions
 
 public:
-    SessionStack() : top_index(-1) {} // Constructor initializes the top index to -1
+    SessionStack() {}  // Default constructor, the vector is automatically initialized
 
-    void stack_login()  // Method to start a new session and push it onto the stack
-    {
-        if (top_index == MAX_SIZE - 1) {  // If the stack is full, print an error message
-            std::cout << "Session stack is full.\n";
-            return;
-        }
-
-        Session session;  // Create a new session
-        session.start_time = get_current_time();  // Set the start time of the session to the current time
-        sessions[++top_index] = session;  // Push the session onto the stack
+    void stack_login() {
+        Session session;
+        session.start_time = get_current_time();
+        sessions.push_back(session);  // Add the session to the vector
     }
 
-    void stack_logout()  // Method to end the current session and pop it from the stack
-    {
-        if (top_index == -1) {  // If the stack is empty, print an error message
-            std::cout << "No active session.\n";
+    void stack_logout() {
+        if (sessions.empty()) {
+            cout << "No active session.\n";
             return;
         }
 
-        Session& current_session = sessions[top_index];  // Get a reference to the current session
-        current_session.end_time = get_current_time();  // Set the end time of the session to the current time
-        current_session.duration = current_session.end_time - current_session.start_time;  // Calculate the duration of the session
-        top_index--;  // Pop the session from the stack
+        Session& current_session = sessions.back();  // Get a reference to the current session
+        current_session.end_time = get_current_time();
+        current_session.duration = current_session.end_time - current_session.start_time;
+        sessions.pop_back();  // Remove the last session from the vector
 
-        std::cout << "The duration time you used is: " << current_session.duration << " seconds\n";  // Print the duration of the session
+        cout << "The duration time you used is: " << current_session.duration << " seconds\n";
     }
 
 private:
-    long long get_current_time() const  // Method to get the current time
-    {
-        using namespace std::chrono;
+    long long get_current_time() const {
+        using namespace chrono;
         return duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
     }
 }stack;
-// Here is stack
 
-// Here is selectionSort
-void selectionSort(string* result, int size) {
-    int i, j, min_idx;
-    for (i = 0; i < size - 1; i++) {  // Iterate over each element in the array
-        min_idx = i;  // Assume the current element is the smallest
-        for (j = i + 1; j < size; j++) {  // Iterate over the remaining elements
-            if (result[j][0] < result[min_idx][0]) {  // If a smaller element is found, update min_idx
+// Selection Sort
+void selectionSort(vector<string>& result) {
+    int size = result.size();
+    for (int i = 0; i < size - 1; i++) {
+        int min_idx = i;
+        for (int j = i + 1; j < size; j++) {
+            if (result[j][0] < result[min_idx][0]) {
                 min_idx = j;
             }
         }
-        swap(result[min_idx], result[i]);  // Swap the smallest element found with the current element
+        swap(result[min_idx], result[i]);
     }
 }
-// Here is selectionSort
 
-// Here is hashSearch
+// Linked Queue
+struct Member_st {
+    string mem_name;
+    string mem_phone;
+    string mem_email;
+    string mem_password;
+    Member_st* next;
+};
+
+//LinkedQueue class
+class LinkedQueue {
+private:
+    Member_st* front; // Points to the front of the queue
+    Member_st* rear; // Points to the rear of the queue
+
+public:
+    // Constructor
+    LinkedQueue() {
+        front = nullptr;
+        rear = nullptr;
+    }
+
+    // Destructor
+    ~LinkedQueue() {
+        while (!isEmpty()) {
+            dequeue();
+        }
+    }
+
+    // Function to check if the queue is empty
+    bool isEmpty() {
+        return (front == nullptr);
+    }
+
+    // Function to enqueue a member
+    void enqueue(Member_st* member) {
+        member->next = nullptr;
+
+        if (isEmpty()) {
+            front = rear = member;
+        } else {
+            rear->next = member;
+            rear = member;
+        }
+    }
+
+    // Function to dequeue a member
+    void dequeue() {
+        if (isEmpty()) {
+            return;
+        }
+
+        Member_st* temp = front;
+
+        if (front == rear) {
+            front = rear = nullptr;
+        } else {
+            front = front->next;
+        }
+
+        delete temp;
+    }
+
+    // Function to get the front member of the queue
+    Member_st* getFront() {
+        if (isEmpty()) {
+            return nullptr;
+        }
+
+        return front;
+    }
+};
+
+// Hash Search
 size_t stringHash(const string& str) {
     size_t hashValue = 0;
-    for (char c : str) {  // Iterate over each character in the string
-        hashValue += c;  // Add the ASCII value of the character to the hash value
+    for (char c : str) {
+        hashValue += c;
     }
-    return hashValue;  // Return the hash value
+    return hashValue;
 }
 
-void hashSearch(string& find, string* data, int dataSize, string* result, int & resultSize)
-{
-    // Loop through the data array and find similar strings
-    for (int i = 0; i < dataSize; i++)
-    {
-        // Convert the current string to lowercase
-        string strLower = data[i];
+void hashSearch(const string& find, const vector<string>& data, vector<string>& result) {
+    size_t findHash = stringHash(find);
+    for (const string& str : data) {
+        string strLower = str;
         transform(strLower.begin(), strLower.end(), strLower.begin(), [](unsigned char c){ return tolower(c); });
 
-        // Generate hash value of current string
-        size_t strHashVal = stringHash(strLower);
-
-        // Compare hash values and check if the current string contains the find string as a substring
-        if (strHashVal == stringHash(find) || strLower.find(find) != string::npos)
-        {
-            // If hash values match or the current string contains the find string, add the string to the result array
-            result[resultSize] = data[i];
-            resultSize++;
+        size_t strHash = stringHash(strLower);
+        if (strHash == findHash || strLower.find(find) != string::npos) {
+            result.push_back(str);
         }
     }
 }
+bool hash_Searching(const string& find, const vector<string>& data) {
+    size_t findHash = stringHash(find);
+    for (const string& str : data) {
+        size_t dataHash = stringHash(str);
+        if (str == find && dataHash == findHash) {
+            cout << "\nSearching successful\n";
+            return true;
+        }
+    }
+    cout << "\nSearching failed\n";
+    return false;
+}
 
-// Here is hashSearch
-// Maximum size of the data array
-const int MAX_SIZE = 100; 
 
-// Function to search for a string in the "Now Showing" movies
-void search_for_ns(string find) {
-    // Open the file containing the names of the "Now Showing" movies
-    ifstream movie_searching_File("Now Showing Movie Name.txt");
-    // If the file cannot be opened, print an error message and return
+// Function to search for movies in a specific file and directory
+void search_for_movies(const string& fileName, const string& directory, const string& find) {
+    ifstream movie_searching_File(fileName);
     if (!movie_searching_File) {
-        cout << "Failed to open Now Showing Movie Name.txt" << endl;
+        cout << "Failed to open " << fileName << endl;
         return;
     }
 
-    // Initialize an array to hold the movie names and a counter for the number of names
-    string data[MAX_SIZE];
-    int dataSize = 0;
+    vector<string> data;
     string line;
-    // Read the movie names from the file into the array
-    while (getline(movie_searching_File, line) && dataSize < MAX_SIZE) {
-        data[dataSize++] = line;
+    while (getline(movie_searching_File, line)) {
+        data.push_back(line);
     }
-    // Close the file after reading
     movie_searching_File.close();
 
-    // Initialize an array to hold the search results and a counter for the number of results
-    int resultSize = 0;
-    string result[MAX_SIZE];
+    vector<string> result;
+    hashSearch(find, data, result);
+    selectionSort(result);
 
-    // Perform a hash search on the movie names using the input string
-    hashSearch(find, data, dataSize, result, resultSize);
-    // Sort the search results
-    selectionSort(result, resultSize);
-
-    // If any matches were found, print the details of the matching movies
-    if (resultSize > 0) {
-        for (int i = 0; i < resultSize; i++) {
-            // Open the file containing the details of the current movie
-            ifstream movie_detail_File("movie storage/Now Showing/" + result[i] + ".txt");
-            // If the file can be opened, read and print its contents
+    if (!result.empty()) {
+        for (const string& movie : result) {
+            ifstream movie_detail_File(directory + movie + ".txt");
             if (movie_detail_File) {
                 while (getline(movie_detail_File, line)) {
                     cout << line << endl;
                 }
-                // Close the file after reading
                 movie_detail_File.close();
                 cout << endl << endl;
             }
         }
     } else {
-        // If no matches were found, print a message
         cout << "No matches found." << endl;
     }
 }
 
-// Function to search for a string in the "Coming Soon" movies
-// This function works the same way as the search_for_ns function, but it reads from a different file
-void search_for_cs(string find) {
-    // Open the file containing the names of the "Coming Soon" movies
-    ifstream movie_searching_File("Coming Soon Movie Name.txt");
-    // If the file cannot be opened, print an error message and return
+
+// Function to search for movies in a specific file and directory
+bool movie_searching(const string& fileName, const string& directory, const string& find) {
+    ifstream movie_searching_File(fileName);
     if (!movie_searching_File) {
-        cout << "Failed to open Coming Soon Movie Name.txt" << endl;
-        return;
+        cout << "Failed to open " << fileName << endl;
+        return false;
     }
 
-    // Initialize an array to hold the movie names and a counter for the number of names
-    string data[MAX_SIZE];
-    int dataSize = 0;
+    vector<string> data;
     string line;
-    // Read the movie names from the file into the array
-    while (getline(movie_searching_File, line) && dataSize < MAX_SIZE) {
-        data[dataSize++] = line;
+    while (getline(movie_searching_File, line)) {
+        data.push_back(line);
     }
-    // Close the file after reading
     movie_searching_File.close();
+    bool Searching = hash_Searching(find, data);
 
-    // Initialize an array to hold the search results and a counter for the number of results
-    int resultSize = 0;
-    string result[MAX_SIZE];
-
-    // Perform a hash search on the movie names using the input string
-    hashSearch(find, data, dataSize, result, resultSize);
-    // Sort the search results
-    selectionSort(result, resultSize);
-
-    // If any matches were found```cpp
-    // If any matches were found, print the details of the matching movies
-    if (resultSize > 0) {
-        for (int i = 0; i < resultSize; i++) {
-            // Open the file containing the details of the current movie
-            ifstream movie_detail_File("movie storage/Coming Soon/" + result[i] + ".txt");
-            // If the file can be opened, read and print its contents
-            if (movie_detail_File) {
-                while (getline(movie_detail_File, line)) {
-                    cout << line << endl;
-                }
-                // Close the file after reading
-                movie_detail_File.close();
-                cout << endl << endl;
+    if (Searching) {
+        ifstream movie_detail_File(directory + find + ".txt");
+        if (movie_detail_File) {
+            while (getline(movie_detail_File, line)) {
+                cout << line << endl;
             }
+            movie_detail_File.close();
+            cout << endl << endl;
         }
     } else {
-        // If no matches were found, print a message
         cout << "No matches found." << endl;
     }
-}
-
-// Function to search for a specific movie in the "Now Showing" list
-bool movie_searching_for_now_showing(string movie_searching_name)
-{
-    // Initialize a boolean variable to indicate whether the movie was found
-    bool Searching;
-    string movie_name, movie_detail;
-    // Open the file containing the names of the "Now Showing" movies
-    fstream movie_searching_File;
-    movie_searching_File.open("Now Showing Movie Name.txt", ios::in);
-    // Loop until the end of the file is reached
-    do{
-        // Read a movie name from the file
-        getline(movie_searching_File, movie_name);
-        // If the movie name matches the input string, print a success message, set Searching to true, and break the loop
-        if(movie_searching_name==movie_name)
-        {
-            cout<<"\nSearching successful\n";
-            Searching= true;
-            break;
-        }
-        // If the end of the file is reached and the movie name does not match the input string, print a failure message and set Searching to false
-        if(movie_searching_File.eof()&&movie_searching_name!=movie_name)
-        {
-            cout<<"\nSearching failed\n";
-            Searching= false;
-            break;
-        }
-    }while(!movie_searching_File.eof());
-    // Close the file after reading
-    movie_searching_File.close();
-    // If the movie was found, open the file containing its details and print them
-    if(Searching)
-    {
-        movie_searching_File.open(("movie storage/Now Showing/" + movie_searching_name + ".txt").c_str(), ios::in);
-        do{
-            getline(movie_searching_File, movie_detail);
-            cout<<movie_detail<<endl;
-        }while(!movie_searching_File.eof());
-        movie_searching_File.close();
-    }
-    // Return whether the movie was found
     return Searching;
 }
 
-// Function to search for a specific movie in the "Coming Soon" list
-// This function works the same way as the movie_searching_for_now_showing function, but it reads from a different file and directory
-bool movie_searching_for_coming_soon(string movie_searching_name)
-{
-    bool Searching;
-    string movie_name, movie_detail;
-    fstream movie_searching_File;
-    movie_searching_File.open("Coming Soon Movie Name.txt", ios::in);
-    do{
-        getline(movie_searching_File, movie_name);
-        if(movie_searching_name==movie_name)
-        {
-            cout<<"\nSearching successful\n";
-            Searching= true;
-            break;
-        }
-        if(movie_searching_File.eof()&&movie_searching_name!=movie_name)
-        {
-            cout<<"\nSearching failed\n";
-            Searching= false;
-            break;
-        }
-    }while(!movie_searching_File.eof());
-    movie_searching_File.close();
-    if(Searching)
-    {
-        movie_searching_File.open(("movie storage/Coming Soon/" + movie_searching_name + ".txt").c_str(), ios::in);
-        do{
-            getline(movie_searching_File, movie_detail);
-            cout<<movie_detail<<endl;
-        }while(!movie_searching_File.eof());
-        movie_searching_File.close();
-    }
-    return Searching;
-}
+

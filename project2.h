@@ -10,43 +10,46 @@ class movie_page{
     string sel_in_menu;
     bool discount;
 	public:
-    movie_page()
-	{
-		total_p=0;
-		n=0;
-		c=0;
-		string mm, none;
-		now_showing.open("Now Showing Movie Name.txt",ios::in);
-		while(!now_showing.eof()){
-			getline(now_showing,none);
-			n++;
-		}
-		now_showing.close();
-		now_s=new movies[n];
-		coming_soon.open("Coming Soon Movie Name.txt",ios::in);
-		while(!coming_soon.eof()){
-			getline(coming_soon,none);
-			c++;
-		}
-		coming_soon.close();
-		c_soon=new movies[c];
-		c=0;
-		n=0;
-		now_showing.open("Now Showing Movie Name.txt",ios::in);
-		while(!now_showing.eof()){	
-			getline(now_showing,mm);
-			now_s[n].mv_name=mm;
-			n++;
-		}
-		now_showing.close();
-		coming_soon.open("Coming Soon Movie Name.txt",ios::in);
-		while(!coming_soon.eof()){
-			getline(coming_soon,mm);
-			c_soon[c].mv_name=mm;
-			c++;
-		}
-		coming_soon.close();
-	}
+    movie_page() {
+        total_p = 0;
+
+        // Read the "Now Showing" movie names into a vector
+        vector<string> nowShowingMovies;
+        ifstream now_showing("Now Showing Movie Name.txt");
+        string movieName;
+        while (getline(now_showing, movieName)) {
+            nowShowingMovies.push_back(movieName);
+        }
+        now_showing.close();
+
+        // Sort the Now Showing movies
+        selectionSort(nowShowingMovies);
+
+        // Set the size and populate the now_s array
+        n = nowShowingMovies.size();
+        now_s = new movies[n];
+        for (int i = 0; i < n; i++) {
+            now_s[i].mv_name = nowShowingMovies[i];
+        }
+
+        // Read the "Coming Soon" movie names into a vector
+        vector<string> comingSoonMovies;
+        ifstream coming_soon("Coming Soon Movie Name.txt");
+        while (getline(coming_soon, movieName)) {
+            comingSoonMovies.push_back(movieName);
+        }
+        coming_soon.close();
+
+        // Sort the Coming Soon movies
+        selectionSort(comingSoonMovies);
+
+        // Set the size and populate the c_soon array
+        c = comingSoonMovies.size();
+        c_soon = new movies[c];
+        for (int i = 0; i < c; i++) {
+            c_soon[i].mv_name = comingSoonMovies[i];
+        }
+    }
 	int m_menu(bool dis)
 	{
         discount= dis;
@@ -98,10 +101,12 @@ class movie_page{
 		sel_movie_page:
         string is;
 		int m_code;
-		for(int i=0;i<n;i++)
+		int i;
+		for(i=0;i<n;i++)
 		{
 			cout<<i+1<<" "<<now_s[i].mv_name<<endl;
 		}
+        cout<<i+1<<" "<<"Back To Menu"<<endl;
 		cout<<"\nPlease Enter the Movie Code: ";
 		cin>>m_code;
         fflush(stdin);
@@ -110,7 +115,7 @@ class movie_page{
 		    cin.clear();  // clear the error flags on cin
 		    cin.ignore(numeric_limits<streamsize>::max(), '\n');  // ignore any remaining input
 		}
-        if(m_code>n||m_code<1)
+        else if(m_code>n+1||m_code<1)
         {
             cout<<"Invalid choosing !"<<endl;
 			cout<<"Please enter again"<<endl;
@@ -118,24 +123,27 @@ class movie_page{
 		    system("cls");
             goto sel_movie_page;
         }
-		bool search=movie_searching_for_now_showing(now_s[m_code-1].mv_name);
-		if(search)
-		{
-			cout<<"\nIs this the movie you choosing ? [Yes/No] : ";
-            getline(cin, is);
-		}
-        system("pause");
-		system("cls");
-        if(is=="Yes"||is=="yes"||is=="Y"||is=="y")
+        else if(m_code==n+1)
         {
-            movie_sel= now_s[m_code-1].mv_name;
-            time_s();
-            sel_seat();
-			cal_total();
-            goto end;
+            sel_in_menu="4";
         }
-        goto sel_movie_page;
-        end:;
+        else{
+            bool search=movie_searching("Now Showing Movie Name.txt", "movie storage/Now Showing/", now_s[m_code-1].mv_name);
+            if(search)
+            {
+                cout<<"\nIs this the movie you choosing ? [Yes/No] : ";
+                getline(cin, is);
+                system("pause");
+                system("cls");
+                if(is=="Yes"||is=="yes"||is=="Y"||is=="y")
+                {
+                    movie_sel= now_s[m_code-1].mv_name;
+                    time_s();
+                    sel_seat();
+                    cal_total();
+                }
+            }
+        }
 	}
     void time_s()
     {
@@ -361,7 +369,7 @@ class movie_page{
     	{
     		total_p+=tic_p [i];
 		}
-        time_t now = time(0);
+        /*time_t now = time(0);
         // convert now to tm struct for UTC
         tm *convert_to_UTC = gmtime(&now);
         string UTC_date = asctime(convert_to_UTC);
@@ -378,7 +386,7 @@ class movie_page{
                 total_p*=0.9;
             else if(total_p>=200)
                 total_p*=0.85;
-        }
+        }*/
 	}
 	void n_showing()
 	{
@@ -386,7 +394,7 @@ class movie_page{
         cout<<"**************************************** "<<endl;
         cout<<"||         Now Showing Movies         || "<<endl;
         cout<<"**************************************** "<<endl;
-        search_for_ns("");
+        search_for_movies("Now Showing Movie Name.txt", "movie storage/Now Showing/", "");
 	}
 	void coming_s()
 	{
@@ -395,7 +403,7 @@ class movie_page{
         cout<<"**************************************** "<<endl;
         cout<<"||            Coming Soon             || "<<endl;
         cout<<"**************************************** "<<endl;
-        search_for_cs("");
+        search_for_movies("Coming Soon Movie Name.txt", "movie storage/Coming Soon/", "");
 	}
 	void display_bill()
 	{
@@ -487,8 +495,6 @@ void access_movie(bool discount)
 	cout<<"\n\n";
 	system("cls");
 	delete movie;
-    system("pause");
-    system("cls");
 }/*
 //food & beverage ordering
 struct Fnb_in_storage

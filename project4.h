@@ -1,76 +1,6 @@
 #include "project3.h"
 // Member structure
-struct Member_st {
-    string mem_name;
-    string mem_phone;
-    string mem_email;
-    string mem_password;
-    Member_st* next;
-};
 
-// Linked Queue class
-class LinkedQueue {
-private:
-    Member_st* front; // Points to the front of the queue
-    Member_st* rear; // Points to the rear of the queue
-
-public:
-    // Constructor
-    LinkedQueue() {
-        front = nullptr;
-        rear = nullptr;
-    }
-
-    // Destructor
-    ~LinkedQueue() {
-        while (!isEmpty()) {
-            dequeue();
-        }
-    }
-
-    // Function to check if the queue is empty
-    bool isEmpty() {
-        return (front == nullptr);
-    }
-
-    // Function to enqueue a member
-    void enqueue(Member_st* member) {
-        member->next = nullptr;
-
-        if (isEmpty()) {
-            front = rear = member;
-        } else {
-            rear->next = member;
-            rear = member;
-        }
-    }
-
-    // Function to dequeue a member
-    void dequeue() {
-        if (isEmpty()) {
-            return;
-        }
-
-        Member_st* temp = front;
-
-        if (front == rear) {
-            front = rear = nullptr;
-        } else {
-            front = front->next;
-        }
-
-        delete temp;
-    }
-
-    // Function to get the front member of the queue
-    Member_st* getFront() {
-        if (isEmpty()) {
-            return nullptr;
-        }
-
-        return front;
-    }
-};
 void view_member()
 {
     int i = 1;
@@ -122,7 +52,7 @@ void view_member()
 
 
 
-class Admin_mode : protected Movie_management, protected Food_and_Beverage_management
+class Admin_mode : protected Movie_management//, protected Food_and_Beverage_management
 {
     protected:
 	    string Admin_id, Admin_ps, keyin_id, keyin_ps, ac_num, ADM;
@@ -217,13 +147,13 @@ class Admin_mode : protected Movie_management, protected Food_and_Beverage_manag
         cout<<"\n==============================================================";
         cout<<"\n";
         cout<<"1. Add or Delete Movie"<<endl;
-        cout<<"2. Add or Delete Food and Beverage"<<endl;
-        cout<<"3. View Remaining Food and Beverage"<<endl;
-        cout<<"4. View Users Information"<<endl;
-        cout<<"5. Remove All Seat Book In System"<<endl;
-        cout<<"6. Exit"<<endl;
+        /*cout<<"2. Add or Delete Food and Beverage"<<endl;
+        cout<<"3. View Remaining Food and Beverage"<<endl;*/
+        cout<<"2. View Users Information"<<endl;
+        cout<<"3. Remove All Seat Book In System"<<endl;
+        cout<<"4. Exit"<<endl;
         if(ADM=="SA")
-            cout<<"7. Add New Admin In System"<<endl;
+            cout<<"5. Add New Admin In System"<<endl;
         cout<<"Please enter your selection : ";
         getline(cin, select);
         cout<<"Loading..";
@@ -238,28 +168,28 @@ class Admin_mode : protected Movie_management, protected Food_and_Beverage_manag
         {
             add_or_delete_movie();
         }
-        else if(select=="Add or Delete Food and Beverage"||select=="add or delete food and beverage"||select=="2")
+        /*else if(select=="Add or Delete Food and Beverage"||select=="add or delete food and beverage"||select=="2")
         {
             add_or_delete_food_and_beverage();
         }
         else if(select=="View Remaining Food and Beverage"||select=="view remaining food and beverage"||select=="3")
         {
             view_remaining_food_and_beverage();
-        }
-        else if(select=="View Users Information"||select=="view users information"||select=="4")
+        }*/
+        else if(select=="View Users Information"||select=="view users information"||select=="2")
         {
             view_member();
         }
-        else if(select=="Remove All Seat Book In System"||select=="remove all seat book in system"||select=="5")
+        else if(select=="Remove All Seat Book In System"||select=="remove all seat book in system"||select=="3")
         {
             remove_all_seat();
         }
-        else if(select=="Exit"||select=="exit"||select=="6")
+        else if(select=="Exit"||select=="exit"||select=="4")
         {
             stack.stack_logout();
             return 0;
         }
-        else if(select=="Add New Admin In System"||select=="add new admin in system"||select=="7"&&ADM=="SA")
+        else if(select=="Add New Admin In System"||select=="add new admin in system"||select=="5"&&ADM=="SA")
         {
             Add_New_SA();
         }

@@ -7,6 +7,7 @@ const string seat_id_c[10]= {"C01", "C02", "C03", "C04", "C05", "C06", "C07", "C
 const string seat_id_d[10]= {"D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10"};
 const string seat_id_couple[4]= {"E01&E02", "E03&E04", "E05&E06", "E07&E08"};
 const string seat_id_oku[2]={"E09", "E10"};
+
 struct movies{
 	string mv_name;
 };
@@ -99,7 +100,7 @@ class Movie_management
         }
 		cout<<"\n\n";
 		system("pause");
-        bool Searching = movie_searching_for_coming_soon(movie_name);
+        bool Searching = movie_searching("Coming Soon Movie Name.txt", "movie storage/Coming Soon/", movie_name);
         if(!Searching)
         {
             bool continue_add_in;
@@ -194,7 +195,7 @@ class Movie_management
         }
 		cout<<"\n\n";
 		system("pause");
-        bool Searching = movie_searching_for_now_showing(movie_name);
+        bool Searching = movie_searching("Now Showing Movie Name.txt", "movie storage/Now Showing/", movie_name);
         if(!Searching)
         {
             bool continue_add_in;
@@ -291,7 +292,7 @@ class Movie_management
         }
 		cout<<"\n\n";
 		system("pause");
-        bool Searching = movie_searching_for_coming_soon(movie_name);
+        bool Searching = movie_searching("Coming Soon Movie Name.txt", "movie storage/Coming Soon/", movie_name);
         if(Searching)
         {
         	movies_file.open("Coming Soon Movie Name.txt", ios::in);
@@ -354,7 +355,7 @@ class Movie_management
         }
 		cout<<"\n\n";
 		system("pause");
-        bool Searching = movie_searching_for_now_showing(movie_name);
+        bool Searching = movie_searching("Now Showing Movie Name.txt", "movie storage/Now Showing/", movie_name);
         if(Searching)
         {
         	movies_file.open("Now Showing Movie Name.txt", ios::in);
@@ -400,7 +401,7 @@ class Movie_management
         if(sel=='Y'||sel=='y')
             goto delete_ns_movie;
     }
-};
+};/*
 class Food_and_Beverage_management
 {
     protected:
@@ -674,4 +675,4 @@ void recommendation()
 	cout<<"\n10% discount for purchase of RM150";
 	cout<<"\n15% discount for purchase of RM200";
     cout<<endl<<endl;
-}
+}*/
