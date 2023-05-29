@@ -10,100 +10,87 @@ class Member
     {
     	access = false;
 	}
-    void login()//login page
-    {
+    void login() {
         login_pa:
-        int mem_status=0;
+        int mem_status = 0;
         string none;
         string login_c;
         string log_password, log_phone;
         system("cls");
-        cout<<"________________________________________________________________"<<endl;
-        cout<<"\t\t || THE - J W - CINEMA || \t\t"<<endl;
-        cout<<"                          [  LOGIN  ]                           "<<endl;
-        cout<<"________________________________________________________________"<<endl;
-        cout<<"Login by : "<<endl;
-        cout<<"1. Name "<<endl;
-        cout<<"2. Phone number "<<endl;
-        cout<<"\nPlease enter your choice : ";
+        cout << "________________________________________________________________" << endl;
+        cout << "\t\t || THE - J W - CINEMA || \t\t" << endl;
+        cout << "                          [  LOGIN  ]                           " << endl;
+        cout << "________________________________________________________________" << endl;
+        cout << "Login by : " << endl;
+        cout << "1. Name " << endl;
+        cout << "2. Phone number " << endl;
+        cout << "\nPlease enter your choice : ";
         getline(cin, login_c);
-        if(login_c=="1")
-        {
-            cout<<"\nPlease enter your member name : ";
-            getline(cin,log_name);
-            cout<<"\nPlease enter password : ";
-            getline(cin,log_password);
+        if (login_c == "1") {
+            cout << "\nPlease enter your member name : ";
+            getline(cin, log_name);
+            cout << "\nPlease enter password : ";
+            getline(cin, log_password);
+            //log_password = computeHash(log_password); // Encrypt the password
         }
-        else if(login_c=="2")
-        {
-            cout<<"\nPlease enter your member phone number : ";
-            getline(cin,log_phone);
-            cout<<"\nPlease enter password : ";
-            getline(cin,log_password);
+        else if (login_c == "2") {
+            cout << "\nPlease enter your member phone number : ";
+            getline(cin, log_phone);
+            cout << "\nPlease enter password : ";
+            getline(cin, log_password);
+            //log_password = computeHash(log_password); // Encrypt the password
         }
-        else
-        {
-            cout<<"Sorry, this is an invalid option. Please try again. "<<endl;
+        else {
+            cout << "Sorry, this is an invalid option. Please try again. " << endl;
             system("pause");
             goto login_pa;
         }
-        cout<<"\nLoading..";
-        for(int i=0;i<2;i++)
-        {
+        cout << "\nLoading..";
+        for (int i = 0; i < 2; i++) {
             sleep(1);
-            cout<<"..";
+            cout << "..";
         }
-        cout<<"\n\n";
-        fstream cusfile("members.txt", ios::in);
-        if(cusfile.fail())
-        { 
-            cout <<"File opening failed.\n";
-        }
-        else
-        {
-            while(!cusfile.eof())
-            {
-                getline(cusfile, mem_name);
-                getline(cusfile, mem_phone);
-                getline(cusfile, mem_email);
-                getline(cusfile, mem_password);
-                getline(cusfile, none);
-                if(cusfile.eof())
+        cout << "\n\n";
+        LinkedQueue memberQueue; // Create a LinkedQueue object to store member information
+        readMembersFromFile(memberQueue); // Read member information from the file and populate the queue
+
+        Member_st* frontMember = memberQueue.getFront();
+
+        while (frontMember != nullptr) {
+            if ((login_c == "1" && log_name == frontMember->mem_name) ||
+                (login_c == "2" && log_phone == frontMember->mem_phone)) {
+                
+                if (log_password == frontMember->mem_password) {
+                    log_name = frontMember->mem_name; //to display name when successful log in
+                    mem_status = 1;
                     break;
-                if((log_phone== mem_phone||log_name==mem_name)&&log_password==mem_password)
-                {
-                    log_name=mem_name; //to display name when successful log in
-                    mem_status=1;
+                } else {
+                    mem_status = 2;
                     break;
                 }
-                else if((log_phone== mem_phone||log_name==mem_name)&&log_password!= mem_password)
-                {
-                    mem_status=2;
-                    break;
-                }
-            }  
-        }  
-        cusfile.close();
-        if(mem_status==1)
-        {
-            mem_status=1;
-            cout << "\nLogin successful." <<endl;
-            cout << "Welcome, "<<log_name<<endl;
-            access=true;
+            }
+            
+            frontMember = frontMember->next;
         }
-        else if(mem_status==2)
-        {
-            mem_status=2;
-            cout << "\nSorry, password entered is wrong. " <<endl;
+
+        if (mem_status == 1) {
+            mem_status = 1;
+            cout << "\nLogin successful." << endl;
+            cout << "Welcome, " << log_name << endl;
+            access = true;
         }
-        else
-        {
-            mem_status=0;
-            cout<<"\nSorry, member not found. " <<endl;
+        else if (mem_status == 2) {
+            mem_status = 2;
+            cout << "\nSorry, password entered is wrong. " << endl;
+        }
+        else {
+            mem_status = 0;
+            cout << "\nSorry, member not found. " << endl;
         }
         system("pause");
         system("cls");
     }
+
     bool get_access()
     {
         return access;
@@ -139,14 +126,13 @@ class Member
             }
             cout << "\n\n";
             system("cls");
-
+            fflush(stdin);
             if (user_s == "1")
                 access_movie(true);
             /*else if(user_s=="2")
                 access_FnB(true);*/
             else if (user_s == "2") {
                 cout << "\nWhat is the movie name you want to search?" << endl;
-                cin.ignore();
                 getline(cin, movie_name);
                 search_for_movies("Coming Soon Movie Name.txt", "movie storage/Coming Soon/", movie_name);
                 system("pause");
@@ -154,7 +140,6 @@ class Member
             }
             else if (user_s == "3") {
                 cout << "\nWhat is the movie name you want to search?" << endl;
-                cin.ignore();
                 getline(cin, movie_name);
                 search_for_movies("Now Showing Movie Name.txt", "movie storage/Now Showing/", movie_name);
                 system("pause");
@@ -185,99 +170,86 @@ class Member
 
         stack.stack_logout();
     }
+    bool edit_member() {
+        bool change = false;
+        string mem_name, mem_phone, mem_email, mem_password;
+        LinkedQueue memberQueue; // Create a LinkedQueue object to store member information
+        readMembersFromFile(memberQueue); // Read member information from the file and populate the queue
 
-    bool edit_member()
-    {
-        bool change=false;
-        string name, phone, email, password, none;
-        do{
-            cout<<"----------------Edit Member Information----------------"<<endl;
-            //key in old information
-            cout<<"Please enter your old member name : ";
+        do {
+            cout << "----------------Edit Member Information----------------" << endl;
+            // Key in old information
+            cout << "Please enter your old member name: ";
             getline(cin, mem_name);
-            if(log_name!=mem_name)
-            {
-                cout<<"\nThis is not you own member name!!\n";
-                cout<<"\nPlease Enter your own member name!!\n";
+            if (log_name != mem_name) {
+                cout << "\nThis is not your own member name!\n";
+                cout << "\nPlease enter your own member name!\n";
                 system("pause");
                 system("cls");
             }
-        }while(log_name!=mem_name);
-        cout<<"Please enter your old member phone number : ";
+        } while (log_name != mem_name);
+
+        cout << "Please enter your old member phone number: ";
         getline(cin, mem_phone);
-        cout<<"Please enter your old member email : ";
+        cout << "Please enter your old member email: ";
         getline(cin, mem_email);
-        cout<<"Please enter your old member password : ";
+        cout << "Please enter your old member password: ";
         getline(cin, mem_password);
-        ifstream cusfile("members.txt"); //Read from original member file
-        ofstream temcusfile("temporary.txt"); //Temporary file to act as a new file
-        if(!cusfile || !temcusfile)
-        {
-            cout << "Error in opening files" << endl;
+        //mem_password = computeHash(mem_password); // Encrypt the password
+
+        // Check and update member information
+        Member_st* frontMember = memberQueue.getFront();
+
+        while (frontMember != nullptr) {
+            if (mem_name == frontMember->mem_name && mem_phone == frontMember->mem_phone &&
+                mem_email == frontMember->mem_email && mem_password == frontMember->mem_password) {
+
+                // Key in new information
+                cout << "\nPlease enter your new member name: ";
+                getline(cin, frontMember->mem_name);
+                cout << "Please enter your new member phone number: ";
+                getline(cin, frontMember->mem_phone);
+                cout << "Please enter your new member email: ";
+                getline(cin, frontMember->mem_email);
+                cout << "Please enter your new member password: ";
+                getline(cin, frontMember->mem_password);
+
+                // Update the member information
+                change = true;
+                break;
+            }
+
+            frontMember = frontMember->next;
         }
-        else
-        {
-            while(!cusfile.eof())//read original member file and get data
-            {
-                getline(cusfile, name);
-                getline(cusfile, phone);
-                getline(cusfile, email);
-                getline(cusfile, password);
-                getline(cusfile, none);
-                if(cusfile.eof()&&(mem_name!=name||mem_phone!=phone||mem_email!=email||mem_password!=password))
-                {
-                    break;
-                }
-                if(!cusfile.eof()&&mem_name==name&&mem_phone==phone&&mem_email==email&&mem_password==password)
-                {   //check and file which data to replace
-                    //key in new information
-                    cout<<"\nPlease enter your new member name : ";
-                    getline(cin,name);
-                    cout<<"Please enter your new member phone number : ";
-                    getline(cin, phone);
-                    cout<<"Please enter your new member email : ";
-                    getline(cin,email);
-                    cout<<"Please enter your new member password : ";
-                    getline(cin, password);
-                    log_name = name;
-                    change=true;
-                }
-                temcusfile<<name<<endl<<phone<<endl<<email<<endl<<password<<endl<<endl;//write new data into new temporary file 
+
+        if (change) {
+            // Write updated member information to the file
+            ofstream outFile("members.txt");
+            frontMember = memberQueue.getFront();
+            
+            while (frontMember != nullptr) {
+                outFile << frontMember->mem_name << endl;
+                outFile << frontMember->mem_phone << endl;
+                outFile << frontMember->mem_email << endl;
+                outFile << frontMember->mem_password << endl;
+                outFile << endl;
+
+                frontMember = frontMember->next;
             }
+            outFile.close();
+
+            cout << "\nNew data inserted. Edit successful.";
+        } else {
+            cout << "These are wrong old member information" << endl;
         }
-        cusfile.close();
-        temcusfile.close();
-        if(change)
-        {
-            int result = remove("members.txt");//delete original member file
-            if(result==0)
-            {//delete successfully
-                cout<<"\nDeleting old data.";         
-            }
-            else
-            {//delete failed
-                cout<<"\nEdit was uncomplete. Errors occur.";
-            }
-            int re_name = rename("temporary.txt", "members.txt");
-            if(re_name==0)//rename new temporary file to same as original member file
-            {//rename successful
-                cout<<"\nNew data inserted. Edit successful. ";
-            }
-            else
-            {//rename failed
-                cout<<"\nEdit was uncomplete. New data was not inserted. ";
-            }
-        }
-        else
-        {
-            cout <<"This are wrong old member information" << endl;
-            remove("temporary.txt");
-        }
-        fflush(stdin);
+
+        cout << endl;
         system("pause");
         system("cls");
         return false;
     }
+
+
     ~Member()
     {
     	if(access)
@@ -297,75 +269,100 @@ void user_login()
         cout<<"\n\nLogin failed\n\n";
     delete user;
 }
-void mem_setdata()//register as member
-{
-	system("cls");
-	fflush(stdin);
-	cout<<"\n \" The J W Cinema -- Your first choice cinema \" "<<endl;
-	cout<<"\n   ~ Welcome to join us as a member ! ~ "<<endl;
-	cout<<"\n----------------[  Member Registration Form  ]----------------"<<endl;
-    cout<<"\n   if want return to home page enter @@@@ "<<endl;
-	na_back:
-    cout<<"\nYour name : ";
-	getline(cin,cus.mem_name);
-    if(cus.mem_name=="@@@@")
-    {
-        goto end_re;
+void mem_setdata() {
+    system("cls");
+    fflush(stdin);
+    LinkedQueue memberQueue; // Create a LinkedQueue object to store member information
+    readMembersFromFile(memberQueue); // Read member information from the file and populate the queue
+    cout << "\n \" The J W Cinema -- Your first choice cinema \" " << endl;
+    cout << "\n   ~ Welcome to join us as a member ! ~ " << endl;
+    cout << "\n----------------[  Member Registration Form  ]----------------" << endl;
+    cout << "\n   if you want to return to the home page, enter return " << endl;
+
+    while (true) {
+        cout << "\nYour name: ";
+        getline(cin, cus.mem_name);
+        if (cus.mem_name == "return") {
+            break;
+        }
+        if (cus.mem_name.empty()) {
+            cout << "\nYou must enter the username to register";
+            continue;
+        }
+
+        // Check for duplicate name
+        Member_st* frontMember = memberQueue.getFront();
+        bool isNameTaken = false;
+        while (frontMember != nullptr) {
+            if (cus.mem_name == frontMember->mem_name) {
+                cout << "\nThis name is already taken. Please choose a different name.";
+                isNameTaken = true;
+                break;
+            }
+            frontMember = frontMember->next;
+        }
+        if (isNameTaken) {
+            continue;
+        }
+
+        cout << "\nYour phone number: ";
+        getline(cin, cus.mem_phone);
+        if (cus.mem_phone == "return") {
+            break;
+        }
+        if (cus.mem_phone.empty()) {
+            cout << "\nYou must enter the phone number to register";
+            continue;
+        }
+
+        cout << "\nYour email: ";
+        getline(cin, cus.mem_email);
+        if (cus.mem_email == "return") {
+            break;
+        }
+        if (cus.mem_email.empty()) {
+            cout << "\nYou must enter your email to register";
+            continue;
+        }
+
+        // Check for duplicate email
+        frontMember = memberQueue.getFront();
+        bool isEmailRegistered = false;
+        while (frontMember != nullptr) {
+            if (cus.mem_email == frontMember->mem_email) {
+                cout << "\nThis email is already registered. Please choose a different email.";
+                isEmailRegistered = true;
+                break;
+            }
+            frontMember = frontMember->next;
+        }
+        if (isEmailRegistered) {
+            continue;
+        }
+
+        cout << "\nPlease create a password for your account: ";
+        getline(cin, cus.mem_password);
+        if (cus.mem_password == "return") {
+            break;
+        }
+        if (cus.mem_password.empty()) {
+            cout << "\nYou must enter your account password to register";
+            continue;
+        }
+
+        if (!(cus.mem_name).empty() && !(cus.mem_phone).empty() && !(cus.mem_email).empty() && !(cus.mem_password).empty()) {
+            //cus.mem_password = computeHash(cus.mem_password); // Encrypt the password
+            fstream cusfile("members.txt", ios::app);
+            if (cusfile.fail()) {
+                cout << "Failed to open file." << endl;
+            } else {
+                cusfile << cus.mem_name << endl << cus.mem_phone << endl << cus.mem_email << endl << cus.mem_password << endl << endl;
+                cout << "\n\nRegister successful! " << endl;
+            }
+            cusfile.close();
+            break;
+        }
     }
-    if((cus.mem_name).empty())
-    {
-        cout<<"\nYou must enter the user name for register";
-        goto na_back;
-    }
-    ph_back:
-	cout<<"\nYour phone number : ";
-    getline(cin,cus.mem_phone);
-    if(cus.mem_phone=="@@@@")
-    {
-        goto end_re;
-    }
-    if((cus.mem_phone).empty())
-    {
-        cout<<"\nYou must enter the phone number for register";
-        goto ph_back;
-    }
-    em_back:
-	cout<<"\nYour email : ";
-	getline(cin,cus.mem_email);
-    if(cus.mem_email=="@@@@")
-    {
-        goto end_re;
-    }
-    if((cus.mem_email).empty())
-    {
-        cout<<"\nYou must enter the your email for register";
-        goto em_back;
-    }
-    pa_back:
-	cout<<"\nPlease create a password for your account : ";
-	getline(cin,cus.mem_password);
-    if(cus.mem_password=="@@@@")
-    {
-        goto end_re;
-    }
-    if((cus.mem_password).empty())
-    {
-        cout<<"\nYou must enter the your account password for register";
-        goto pa_back;
-    }
-	if(!(cus.mem_name).empty()&&!(cus.mem_phone).empty()&&!(cus.mem_email).empty()&&!(cus.mem_password).empty())
-	{
-		fstream cusfile("members.txt", ios::app);
-	    if(cusfile.fail())
-	    {
-	        cout<<"Failed to open file."<<endl; 
-	    }
-	    else
-	    {
-			cusfile<<cus.mem_name<<endl<<cus.mem_phone<<endl<<cus.mem_email<<endl<<cus.mem_password<<endl<<endl;
-	        cout<<"\n\nResgister successful! "<<endl;
-		}
-	    cusfile.close();
-	}
-    end_re:;
 }
+
+

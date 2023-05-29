@@ -28,14 +28,14 @@ void selectpage(string name)
         }
         cout << "\n\n";
         system("cls");
-
+        fflush(stdin);
         if (user_s == "1")
             access_movie(false);
         /*else if(user_s=="2")
             access_FnB(false);*/
         else if (user_s == "2") {
+            
             cout << "\nWhat is the movie name you want to search?" << endl;
-            cin.ignore();
             getline(cin, movie_name);
             search_for_movies("Coming Soon Movie Name.txt", "movie storage/Coming Soon/", movie_name);
             system("pause");
@@ -43,7 +43,6 @@ void selectpage(string name)
         }
         else if (user_s == "3") {
             cout << "\nWhat is the movie name you want to search?" << endl;
-            cin.ignore();
             getline(cin, movie_name);
             search_for_movies("Now Showing Movie Name.txt", "movie storage/Now Showing/", movie_name);
             system("pause");

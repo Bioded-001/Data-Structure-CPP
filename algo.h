@@ -2,17 +2,30 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
-#include<cstdlib>
-#include<cmath>
-#include<iomanip>
-#include<cstring> 
-#include<fstream>
-#include<unistd.h>
-#include<ctime>
-#include<cctype>
+#include <cstdlib>
+#include <cmath>
+#include <iomanip>
+#include <cstring> 
+#include <fstream>
+#include <unistd.h>
+#include <ctime>
+#include <cctype>
 #include <chrono>
 #include <vector>
+//#include <openssl/sha.h>
+//#include <sstream>
 using namespace std;
+const float ticket_price_A=19, ticket_price_C=12; // ticket_price
+const vector<string> seat_id = {
+    "A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10",
+    "B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10",
+    "C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10",
+    "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10",
+    "E01", "E02", "E03", "E04", "E05", "E06", "E07", "E08", "E09", "E10"
+};
+struct movies{
+	string mv_name;
+};
 // Stack
 struct Session {
     long long start_time;  // The start time of the session
@@ -69,6 +82,70 @@ void selectionSort(vector<string>& result) {
 }
 
 // Linked Queue
+struct ticket_in_move {
+    string ticket_id;
+    ticket_in_move* next;
+};
+
+
+class TicketQueue {
+private:
+    ticket_in_move* front;
+    ticket_in_move* rear;
+
+public:
+    TicketQueue() {
+        front = nullptr;
+        rear = nullptr;
+    }
+
+    ~TicketQueue() {
+        while (!isEmpty()) {
+            dequeue();
+        }
+    }
+
+    bool isEmpty() const {
+        return front == nullptr;
+    }
+
+    void enqueue(const ticket_in_move& item) {
+        ticket_in_move* newTicket = new ticket_in_move;
+        newTicket->ticket_id = item.ticket_id;
+        newTicket->next = nullptr;
+
+        if (isEmpty()) {
+            front = rear = newTicket;
+        } else {
+            rear->next = newTicket;
+            rear = newTicket;
+        }
+    }
+
+    void dequeue() {
+        if (isEmpty()) {
+            return;
+        }
+
+        ticket_in_move* temp = front;
+
+        if (front == rear) {
+            front = rear = nullptr;
+        } else {
+            front = front->next;
+        }
+
+        delete temp;
+    }
+
+    ticket_in_move* getFront() const {
+        if (isEmpty()) {
+            return nullptr;
+        }
+        return front;
+    }
+};
+
 struct Member_st {
     string mem_name;
     string mem_phone;
@@ -77,32 +154,27 @@ struct Member_st {
     Member_st* next;
 };
 
-//LinkedQueue class
 class LinkedQueue {
 private:
     Member_st* front; // Points to the front of the queue
     Member_st* rear; // Points to the rear of the queue
 
 public:
-    // Constructor
     LinkedQueue() {
         front = nullptr;
         rear = nullptr;
     }
 
-    // Destructor
     ~LinkedQueue() {
         while (!isEmpty()) {
             dequeue();
         }
     }
 
-    // Function to check if the queue is empty
     bool isEmpty() {
-        return (front == nullptr);
+        return front == nullptr;
     }
 
-    // Function to enqueue a member
     void enqueue(Member_st* member) {
         member->next = nullptr;
 
@@ -110,11 +182,10 @@ public:
             front = rear = member;
         } else {
             rear->next = member;
-            rear = member;
+            rear = rear->next;
         }
     }
 
-    // Function to dequeue a member
     void dequeue() {
         if (isEmpty()) {
             return;
@@ -131,7 +202,6 @@ public:
         delete temp;
     }
 
-    // Function to get the front member of the queue
     Member_st* getFront() {
         if (isEmpty()) {
             return nullptr;
@@ -141,6 +211,73 @@ public:
     }
 };
 
+void readTicketsFromFile(TicketQueue& queue, const string& movie_sel, const string& sel_time) {
+    ifstream ticket_file(("movie storage/Seat/" + movie_sel + "/" + sel_time + " " + movie_sel + ".txt").c_str());
+    string ticket_id;
+
+    if (!ticket_file) {
+        cout << "Error in opening ticket file." << endl;
+        return;
+    }
+
+    while (getline(ticket_file, ticket_id)) {
+        ticket_in_move newTicket;
+        newTicket.ticket_id = ticket_id;
+        queue.enqueue(newTicket);
+    }
+
+    ticket_file.close();
+}
+
+void readMembersFromFile(LinkedQueue& queue) {
+    ifstream memberFile("members.txt");
+    
+    if (!memberFile) {
+        cout << "Error in opening members.txt" << endl;
+        return;
+    }
+    
+    string name, phone, email, password, none;
+    
+    while (getline(memberFile, name)) {
+        getline(memberFile, phone);
+        getline(memberFile, email);
+        getline(memberFile, password);
+        getline(memberFile, none);
+        
+        Member_st* member = new Member_st;
+        member->mem_name = name;
+        member->mem_phone = phone;
+        member->mem_email = email;
+        member->mem_password = password;
+        member->next = nullptr;
+        
+        queue.enqueue(member);
+    }
+    
+    memberFile.close();
+}
+bool check_seat_valid(string sel_seat_id){
+    for (const string& str : seat_id) {
+        if (sel_seat_id == str) {
+            return true;
+        }
+    }
+    return false;
+}
+bool check_seat_havent(const string& sel_seat_id, const TicketQueue& tic) {
+    ticket_in_move* current = tic.getFront();
+    while (current != nullptr) {
+        if (!current->ticket_id.empty()) {
+            if (sel_seat_id == current->ticket_id) {
+                return true;
+            }
+        }
+        current = current->next;
+    }
+    return false;
+}
+
 // Hash Search
 size_t stringHash(const string& str) {
     size_t hashValue = 0;
@@ -149,6 +286,23 @@ size_t stringHash(const string& str) {
     }
     return hashValue;
 }
+
+// Function to compute SHA-256 hash of a string
+/*
+string computeHash(const string& str) {
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, str.c_str(), str.length());
+    SHA256_Final(hash, &sha256);
+
+    stringstream ss;
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i) {
+        ss << hex << static_cast<int>(hash[i]);
+    }
+    return ss.str();
+}
+*/
 
 void hashSearch(const string& find, const vector<string>& data, vector<string>& result) {
     size_t findHash = stringHash(find);
@@ -166,7 +320,7 @@ bool hash_Searching(const string& find, const vector<string>& data) {
     size_t findHash = stringHash(find);
     for (const string& str : data) {
         size_t dataHash = stringHash(str);
-        if (str == find && dataHash == findHash) {
+        if (dataHash == findHash) {
             cout << "\nSearching successful\n";
             return true;
         }
@@ -174,7 +328,6 @@ bool hash_Searching(const string& find, const vector<string>& data) {
     cout << "\nSearching failed\n";
     return false;
 }
-
 
 // Function to search for movies in a specific file and directory
 void search_for_movies(const string& fileName, const string& directory, const string& find) {

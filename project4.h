@@ -1,54 +1,31 @@
 #include "project3.h"
 // Member structure
 
-void view_member()
-{
+void view_member() {
     int i = 1;
     const int nameWidth = 20;
-    ifstream cusfile("members.txt");
-    if (cusfile.fail()) {
-        cout << "File opening failed.\n";
+    
+    LinkedQueue memberQueue; // Create a LinkedQueue object to store member information
+    readMembersFromFile(memberQueue); // Read member information from the file and populate the queue
+    
+    // Display the member information from the queue
+    if (memberQueue.isEmpty()) {
+        cout << "No member information available." << endl;
     } else {
-        LinkedQueue memberQueue; // Create a LinkedQueue object to store member information
-        string line;
-        while (getline(cusfile, line)) {
-            if (line.empty()) {
-                continue;
-            }
-            Member_st* newMember = new Member_st;
-            newMember->mem_name = line;
-
-            getline(cusfile, line);
-            newMember->mem_phone = line;
-
-            getline(cusfile, line);
-            newMember->mem_email = line;
-
-            getline(cusfile, line);
-            newMember->mem_password = line;
-
-            memberQueue.enqueue(newMember); // Enqueue member
-        }
-
-        cusfile.close();
-
-        // Display the member information from the queue
-        if (memberQueue.isEmpty()) {
-            cout << "No member information available." << endl;
-        } else {
-            cout << "-----------------------------------------------------------------------------------Member Information-----------------------------------------------------------------------------------" << endl;
-            while (!memberQueue.isEmpty()) {
-                Member_st* member = memberQueue.getFront();
-                cout << i << ". Member Name : " << left << setw(nameWidth) << member->mem_name;
-                cout << "| Member Phone Number : " << left << setw(nameWidth) << member->mem_phone;
-                cout << "| Member Email : " << left << setw(nameWidth) << member->mem_email;
-                cout << "| Member Password : " << member->mem_password << endl;
-                memberQueue.dequeue();
-                i++;
-            }
+        cout << "-----------------------------------------------------------------------------------Member Information-----------------------------------------------------------------------------------" << endl;
+        
+        while (!memberQueue.isEmpty()) {
+            Member_st* member = memberQueue.getFront();
+            cout << i << ". Member Name : " << left << setw(nameWidth) << member->mem_name;
+            cout << "| Member Phone Number : " << left << setw(nameWidth) << member->mem_phone;
+            cout << "| Member Email : " << left << setw(nameWidth) << member->mem_email;
+            cout << "| Member Password : " << "********" << endl;
+            memberQueue.dequeue();
+            i++;
         }
     }
 }
+
 
 
 
@@ -150,7 +127,7 @@ class Admin_mode : protected Movie_management//, protected Food_and_Beverage_man
         /*cout<<"2. Add or Delete Food and Beverage"<<endl;
         cout<<"3. View Remaining Food and Beverage"<<endl;*/
         cout<<"2. View Users Information"<<endl;
-        cout<<"3. Remove All Seat Book In System"<<endl;
+        cout<<"3. Remove Seat Book In Movie"<<endl;
         cout<<"4. Exit"<<endl;
         if(ADM=="SA")
             cout<<"5. Add New Admin In System"<<endl;
@@ -180,9 +157,9 @@ class Admin_mode : protected Movie_management//, protected Food_and_Beverage_man
         {
             view_member();
         }
-        else if(select=="Remove All Seat Book In System"||select=="remove all seat book in system"||select=="3")
+        else if(select=="Remove Seat Book In Movie"||select=="remove seat book in movie"||select=="3")
         {
-            remove_all_seat();
+            remove_seat();
         }
         else if(select=="Exit"||select=="exit"||select=="4")
         {
@@ -219,23 +196,27 @@ class Admin_mode : protected Movie_management//, protected Food_and_Beverage_man
             cout<<"This is the new admin account number  :  "<<new_num<<endl;
         }
     }
-    string Add_New_SA(string id, string ps)
-    {
-        int x;
+   string Add_New_SA(string id, string ps) {
+        int adminNum;
         string y;
+
         Admin_File.open("Admin/Admin.txt", ios::in);
-        Admin_File>>x;
-        Admin_File>>y;
+        Admin_File >> adminNum;
+        Admin_File >> y;
         Admin_File.close();
-        Admin_File.open(("Admin/Admin"+y+".txt").c_str(), ios::out);
-        Admin_File<<id<<endl<<ps;
+
+        Admin_File.open(("Admin/Admin" + y + ".txt").c_str(), ios::out);
+        Admin_File << id << endl << ps;
         Admin_File.close();
-        x++;
+
+        adminNum++;
         Admin_File.open("Admin/Admin.txt", ios::out);
-        Admin_File<<x<<" "<<x;
+        Admin_File << adminNum << " " << adminNum;
         Admin_File.close();
+
         return y;
     }
+
     ~Admin_mode()
     {
         fflush(stdin);
