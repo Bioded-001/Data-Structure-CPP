@@ -1,0 +1,5 @@
+Movie Name     - 
+Genre          - 
+Running Time   - 
+Classification - 
+Synopsis       - 2

@@ -141,6 +141,8 @@ class movie_page{
                     time_s();
                     sel_seat();
                     cal_total();
+                }else{
+                    sel_in_menu="4";
                 }
             }
         }
@@ -207,8 +209,7 @@ class movie_page{
         string sel_seat_id, ticket_in_file, is;
         TicketQueue tic;
         int maxticket = readTicketsFromFile(tic, movie_sel, sel_time);
-        int maxticket = readTicketsFromFile(tic, movie_sel, sel_time);
-
+      
         do {
             do {
                 // Prompt the user to enter the number of tickets
@@ -420,7 +421,8 @@ void access_movie(bool discount)
 	cout<<"\n\n";
 	system("cls");
 	delete movie;
-}/*
+}
+/*
 //food & beverage ordering
 struct Fnb_in_storage
 {

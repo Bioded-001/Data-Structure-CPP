@@ -1,0 +1,6 @@
+Movie Name     - a
+Release Date   - 
+Genre          - 
+Running Time   - 
+Classification - 
+Synopsis       - 

@@ -149,19 +149,38 @@ class Movie_management
                     movies_file<<"Running Time   - "<<enter_content<<endl;
                     cout<<"Enter the Classification : ";
                     getline(cin, enter_content);
-                    movies_file<<"Classification - "<<enter_content<<endl;
-                    cout<<"Please enter the line of Synopsis want to add : ";
-                    cin>>total_line;
-                    fflush(stdin);
-                    cout<<"Enter the Synopsis line 1 : ";
-                    getline(cin, enter_content);
-                    movies_file<<"Synopsis       - "<<enter_content;
-                    for (int synopsis_line = 1; synopsis_line < total_line; synopsis_line++)
-                    {
-                        cout<<"Enter the Synopsis line "<<synopsis_line+1<<" : ";
-                        getline(cin, enter_content);
-                        movies_file<<"\n                 "<<enter_content;
+                    movies_file << "Classification - " << enter_content << endl;
+                    cout << "Please enter the number of lines of Synopsis you want to add [max 5 lines]: ";
+                    cin >> total_line;
+
+                    // Check if the input is valid
+                    if (cin.fail()) {
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     }
+
+                    // Validate and adjust the number of lines for the synopsis
+                    if (total_line > 5) {
+                        total_line = 5;
+                    } else if (total_line != 1 && total_line != 2 && total_line != 3 && total_line != 4 && total_line != 5) {
+                        total_line = 1;
+                    }
+
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    // Add each line of the synopsis
+                    cout << "Enter the Synopsis line 1: ";
+                    getline(cin, enter_content);
+                    movies_file << "Synopsis       - " << enter_content;
+
+                    for (int synopsis_line = 1; synopsis_line < total_line; synopsis_line++) {
+                        cout << "Enter the Synopsis line " << synopsis_line + 1 << ": ";
+                        getline(cin, enter_content);
+                        movies_file << "\n                 " << enter_content;
+                    }
+
+                    cout << "Movie added successfully." << endl;
+
                 }
                 else
                 {
@@ -241,25 +260,44 @@ class Movie_management
                     movies_file<<"Running Time   - "<<enter_content<<endl;
                     cout<<"Enter the Classification : ";
                     getline(cin, enter_content);
-                    movies_file<<"Classification - "<<enter_content<<endl;
-                    cout<<"Please enter the line of Synopsis want to add : ";
-                    cin>>total_line;
-                    fflush(stdin);
-                    cout<<"Enter the Synopsis line 1 : ";
-                    getline(cin, enter_content);
-                    movies_file<<"Synopsis       - "<<enter_content;
-                    for (int synopsis_line = 1; synopsis_line < total_line; synopsis_line++)
-                    {
-                        cout<<"Enter the Synopsis line "<<synopsis_line+1<<" : ";
-                        getline(cin, enter_content);
-                        movies_file<<"\n                 "<<enter_content;
+                    movies_file << "Classification - " << enter_content << endl;
+
+                    cout << "Please enter the number of lines of Synopsis you want to add [max 5 lines]: ";
+                    cin >> total_line;
+
+                    // Check if the input is valid
+                    if (cin.fail()) {
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     }
+
+                    // Validate and adjust the number of lines for the synopsis
+                    if (total_line > 5) {
+                        total_line = 5;
+                    } else if (total_line != 1 && total_line != 2 && total_line != 3 && total_line != 4 && total_line != 5) {
+                        total_line = 1;
+                    }
+
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    // Add each line of the synopsis
+                    cout << "Enter the Synopsis line 1: ";
+                    getline(cin, enter_content);
+                    movies_file << "Synopsis       - " << enter_content;
+
+                    for (int synopsis_line = 1; synopsis_line < total_line; synopsis_line++) {
+                        cout << "Enter the Synopsis line " << synopsis_line + 1 << ": ";
+                        getline(cin, enter_content);
+                        movies_file << "\n                 " << enter_content;
+                    }
+
                     movies_ticket_file.open(("movie storage/Seat/"+movie_name+"/Morning "+movie_name+".txt").c_str(), ios::out);
                     movies_ticket_file.close();
                     movies_ticket_file.open(("movie storage/Seat/"+movie_name+"/Afternoon "+movie_name+".txt").c_str(), ios::out);
                     movies_ticket_file.close();
                     movies_ticket_file.open(("movie storage/Seat/"+movie_name+"/Night "+movie_name+".txt").c_str(), ios::out);
                     movies_ticket_file.close();
+                    cout<<"movie add in Successful"<<endl;
                 }
                 else
                 {

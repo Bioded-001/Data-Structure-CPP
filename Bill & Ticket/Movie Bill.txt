@@ -1,9 +1,7 @@
 =======================================================
 ||                      BILL                         ||
 =======================================================
-	Movie Name : Avatar The Way of Water
-	Movie Time : Morning
-	Movie Seat : A02
-	Seat Price : RM19.00
+	Movie Name : 
+	Movie Time : 
 ---------------------------------------------------------
-Total Price				 : RM19.00
+Total Price				 : RM0.00

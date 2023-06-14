@@ -217,7 +217,6 @@ int readTicketsFromFile(TicketQueue& queue, const string& movie_sel, const strin
     int maxticket = 0;
     if (!ticket_file) {
         cout << "Error in opening ticket file." << endl;
-        return;
     }
 
     while (getline(ticket_file, ticket_id)) {
