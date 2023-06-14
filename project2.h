@@ -140,7 +140,6 @@ class movie_page{
                     movie_sel= now_s[m_code-1].mv_name;
                     time_s();
                     sel_seat();
-                    cal_total();
                 }else{
                     sel_in_menu="4";
                 }
@@ -209,104 +208,111 @@ class movie_page{
         string sel_seat_id, ticket_in_file, is;
         TicketQueue tic;
         int maxticket = 30 - readTicketsFromFile(tic, movie_sel, sel_time);
-    
-        do {
+        if(maxticket==0){
+            cout << "The seat full ";
+            sel_in_menu="4";
+        }else{
             do {
-                // Prompt the user to enter the number of tickets
-                cout << "How many tickets would you like to purchase? : ";
-                cout << "Maximum available tickets: " << maxticket << endl;
-                cin >> num_ticket;
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                do {
+                    // Prompt the user to enter the number of tickets
+                    cout << "How many tickets would you like to purchase? : ";
+                    cout << "Maximum available tickets: " << maxticket << endl;
+                    cin >> num_ticket;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    // Check if the input is valid
+                    if (cin.fail()) {
+                        cin.clear();
+                        cout << "Invalid input. Please enter a valid number." << endl;
+                    } else if (num_ticket <= 0) {
+                        cout << "Number of tickets must be greater than 0." << endl;
+                    } else if (num_ticket > maxticket) {
+                        cout << "Number of tickets cannot exceed the maximum available tickets." << endl;
+                    }
+
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                } while (cin.fail() || num_ticket <= 0 || num_ticket > maxticket);
+
+                // Ask for confirmation from the user
+                cout << "\n\nIs this the number of tickets you want to purchase? [Yes/No] : ";
+                getline(cin, is);
+                system("cls");
 
                 // Check if the input is valid
                 if (cin.fail()) {
                     cin.clear();
-                    cout << "Invalid input. Please enter a valid number." << endl;
-                } else if (num_ticket <= 0) {
-                    cout << "Number of tickets must be greater than 0." << endl;
-                } else if (num_ticket > maxticket) {
-                    cout << "Number of tickets cannot exceed the maximum available tickets." << endl;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 }
-
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            } while (cin.fail() || num_ticket <= 0 || num_ticket > maxticket);
-
-            // Ask for confirmation from the user
-            cout << "\n\nIs this the number of tickets you want to purchase? [Yes/No] : ";
-            getline(cin, is);
-            system("cls");
-
-            // Check if the input is valid
-            if (cin.fail()) {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            }
-        } while (is != "Yes" && is != "yes" && is != "Y" && is != "y");
+            } while (is != "Yes" && is != "yes" && is != "Y" && is != "y");
 
 
-        ticket = new string[num_ticket];
-        tic_p = new float[num_ticket];
+            ticket = new string[num_ticket];
+            tic_p = new float[num_ticket];
 
-        for (int i = 0; i < num_ticket; i++) {
-            bool check_1;
-            bool check_2;
-            do{
-                cout << "\n\t\t\t\t Screen" << endl;
-                cout << "    ------------------------------------------------------------------" << endl;
-                cout << "   /\t\t\t\t\t\t\t\t      \\\n";
-                cout << "  /\t\t\t\t\t\t\t\t       \\\n";
-                cout << " /\t\t\t\t\t\t\t\t        \\\n" << endl;
-                cout << "    A  [A01] [A02] [A03] [A04] [A05] [A06] [A07] [A08] [A09] [A10]     \n\n";
-                cout << "    B  [B01] [B02] [B03] [B04] [B05] [B06] [B07] [B08] [B09] [B10]     \n\n";
-                cout << "    C  [C01] [C02] [C03] [C04] [C05] [C06] [C07] [C08] [C09] [C10]     \n\n";
-                cout << "    D  [D01] [D02] [D03] [D04] [D05] [D06] [D07] [D08] [D09] [D10]     \n\n";
-                cout << "    E  [E01] [E02] [E03] [E04] [E05] [E06] [E07] [E08] [E09] [E10]     \n\n";
-                cout << "\nPlease select a seat: ";
-                getline(cin, sel_seat_id);
-                transform(sel_seat_id.begin(), sel_seat_id.end(), sel_seat_id.begin(), ::toupper);
-                check_1 = check_seat_valid(sel_seat_id);
-                check_2 = check_seat_havent(sel_seat_id, tic);
-                if (check_1==false) {
-                    cout << "The seat you entered is not in the system.\n";
-                    system("pause");
-                    system("cls");
-                }
-                else if (check_2==true) {
-                    cout << "The seat you entered has already been booked by someone else.\n";
-                    system("pause");
-                    system("cls");
-                }
-            } while (check_1==false || check_2==true);
-            char ticket_type;
-            cout << "1. Adult" << endl;
-            cout << "2. Children" << endl;
-            cout << "Please select one: ";
-            cin >> ticket_type;
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-            while (ticket_type != '1' && ticket_type != '2') {
-                cout << "Invalid ticket type. Please select again: ";
+            for (int i = 0; i < num_ticket; i++) {
+                bool check_1;
+                bool check_2;
+                do{
+                    cout << "\n\t\t\t\t Screen" << endl;
+                    cout << "    ------------------------------------------------------------------" << endl;
+                    cout << "   /\t\t\t\t\t\t\t\t      \\\n";
+                    cout << "  /\t\t\t\t\t\t\t\t       \\\n";
+                    cout << " /\t\t\t\t\t\t\t\t        \\\n" << endl;
+                    cout << "    A  [A01] [A02] [A03] [A04] [A05] [A06] [A07] [A08] [A09] [A10]     \n\n";
+                    cout << "    B  [B01] [B02] [B03] [B04] [B05] [B06] [B07] [B08] [B09] [B10]     \n\n";
+                    cout << "    C  [C01] [C02] [C03] [C04] [C05] [C06] [C07] [C08] [C09] [C10]     \n\n";
+                    cout << "    D  [D01] [D02] [D03] [D04] [D05] [D06] [D07] [D08] [D09] [D10]     \n\n";
+                    cout << "    E  [E01] [E02] [E03] [E04] [E05] [E06] [E07] [E08] [E09] [E10]     \n\n";
+                    display_alre_book(tic);
+                    cout << "\nPlease select a seat: ";
+                    getline(cin, sel_seat_id);
+                    transform(sel_seat_id.begin(), sel_seat_id.end(), sel_seat_id.begin(), ::toupper);
+                    check_1 = check_seat_valid(sel_seat_id);
+                    check_2 = check_seat_havent(sel_seat_id, tic);
+                    if (check_1==false) {
+                        cout << "The seat you entered is not in the system.\n";
+                        system("pause");
+                        system("cls");
+                    }
+                    else if (check_2==true) {
+                        cout << "The seat you entered has already been booked by someone else.\n";
+                        system("pause");
+                        system("cls");
+                    }
+                } while (check_1==false || check_2==true);
+                char ticket_type;
+                cout << "1. Adult       RM 19.00" << endl;
+                cout << "2. Children    RM 12.00" << endl;
+                cout << "Please select one: ";
                 cin >> ticket_type;
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            }
 
-            if (ticket_type == '1' || ticket_type == 'A' || ticket_type == 'a') {
-                tic_p[i] = ticket_price_A;
-            } else if (ticket_type == '2' || ticket_type == 'C' || ticket_type == 'c') {
-                tic_p[i] = ticket_price_C;
+                while (ticket_type != '1' && ticket_type != '2') {
+                    cout << "Invalid ticket type. Please select again: ";
+                    cin >> ticket_type;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                }
+
+                if (ticket_type == '1' || ticket_type == 'A' || ticket_type == 'a') {
+                    tic_p[i] = ticket_price_A;
+                } else if (ticket_type == '2' || ticket_type == 'C' || ticket_type == 'c') {
+                    tic_p[i] = ticket_price_C;
+                }
+                
+                ticket[i] = sel_seat_id;
+                ticket_file.open(("movie storage/Seat/" + movie_sel + "/" + sel_time + " " + movie_sel + ".txt").c_str(), ios::app);
+                ticket_file << ticket[i] << endl;
+                ticket_file.close();
+                cout << ticket[i] << " book successful\n";
+                ticket_in_move newTicket;
+                newTicket.ticket_id = ticket[i];
+                tic.enqueue(newTicket);
+                system("pause");
+                system("cls");
             }
-            
-            ticket[i] = sel_seat_id;
-            ticket_file.open(("movie storage/Seat/" + movie_sel + "/" + sel_time + " " + movie_sel + ".txt").c_str(), ios::app);
-            ticket_file << ticket[i] << endl;
-            ticket_file.close();
-            cout << ticket[i] << " book successful\n";
-            ticket_in_move newTicket;
-            newTicket.ticket_id = ticket[i];
-            tic.enqueue(newTicket);
-            system("pause");
-            system("cls");
+            cal_total();
         }
+
     }
 
     void cal_total()

@@ -229,6 +229,34 @@ int readTicketsFromFile(TicketQueue& queue, const string& movie_sel, const strin
     ticket_file.close();
     return maxticket;
 }
+void display_alre_book(TicketQueue& queue) {
+    ticket_in_move* current = queue.getFront();
+
+    if (current == nullptr) {
+        cout << "No seats have been booked yet." << endl;
+        return;
+    }
+
+    cout << "Already booked seats:" << endl;
+
+    int seatCount = 0;
+
+    while (current != nullptr) {
+        if (!current->ticket_id.empty()) {
+            string seat_id = current->ticket_id;
+            cout <<"["<< seat_id << "] ";
+            seatCount++;
+
+            if (seatCount % 10 == 0) {
+                cout << endl;
+            }
+        }
+        current = current->next;
+    }
+
+    cout << endl;
+}
+
 
 void readMembersFromFile(LinkedQueue& queue) {
     ifstream memberFile("members.txt");
