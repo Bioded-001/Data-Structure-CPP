@@ -2,7 +2,7 @@
 class movie_page{
 	private: 
 	float *tic_p, total_p;
-	int num_ticket;
+	int num_ticket = 0;
 	movies  *now_s, *c_soon;
 	fstream now_showing, coming_soon, ticket_file;
 	int n,c;
@@ -208,8 +208,8 @@ class movie_page{
     void sel_seat() {
         string sel_seat_id, ticket_in_file, is;
         TicketQueue tic;
-        int maxticket = readTicketsFromFile(tic, movie_sel, sel_time);
-      
+        int maxticket = 30 - readTicketsFromFile(tic, movie_sel, sel_time);
+    
         do {
             do {
                 // Prompt the user to enter the number of tickets
@@ -227,10 +227,11 @@ class movie_page{
                 } else if (num_ticket > maxticket) {
                     cout << "Number of tickets cannot exceed the maximum available tickets." << endl;
                 }
+
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
             } while (cin.fail() || num_ticket <= 0 || num_ticket > maxticket);
 
             // Ask for confirmation from the user
-            string is;
             cout << "\n\nIs this the number of tickets you want to purchase? [Yes/No] : ";
             getline(cin, is);
             system("cls");
@@ -241,6 +242,7 @@ class movie_page{
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
             }
         } while (is != "Yes" && is != "yes" && is != "Y" && is != "y");
+
 
         ticket = new string[num_ticket];
         tic_p = new float[num_ticket];
