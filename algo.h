@@ -426,3 +426,105 @@ bool movie_searching(const string& fileName, const string& directory, const stri
 }
 
 
+struct admin_n {
+    string name;
+    admin_n* next;
+};
+
+class Admin_LinkedQueue {
+private:
+    admin_n* front; // Points to the front of the queue
+    admin_n* rear; // Points to the rear of the queue
+
+public:
+    Admin_LinkedQueue() {
+        front = nullptr;
+        rear = nullptr;
+    }
+
+    ~Admin_LinkedQueue() {
+        while (!isEmpty()) {
+            dequeue();
+        }
+    }
+
+    bool isEmpty() {
+        return front == nullptr;
+    }
+
+    void enqueue(admin_n* admin) {
+        admin->next = nullptr;
+
+        if (isEmpty()) {
+            front = rear = admin;
+        } else {
+            rear->next = admin;
+            rear = rear->next;
+        }
+    }
+
+    void dequeue() {
+        if (isEmpty()) {
+            return;
+        }
+
+        admin_n* temp = front;
+
+        if (front == rear) {
+            front = rear = nullptr;
+        } else {
+            front = front->next;
+        }
+
+        delete temp;
+    }
+
+    admin_n* getFront() {
+        if (isEmpty()) {
+            return nullptr;
+        }
+
+        return front;
+    }
+};
+
+void readAdminIDsFromFile(Admin_LinkedQueue& queue) {
+    ifstream admin_file("Admin/Admin.txt");
+
+    if (!admin_file) {
+        cout << "Error in opening admin file." << endl;
+        return;
+    }
+
+    int adminNum;
+    admin_file >> adminNum;
+
+    for (int i = 0; i < adminNum; i++) {
+        admin_n* newAdmin = new admin_n;
+        newAdmin->next = nullptr;
+        string admin_id = "Admin" + to_string(i + 1);
+        newAdmin->name = admin_id;
+        queue.enqueue(newAdmin);
+    }
+
+    admin_file.close();
+}
+
+bool checkRepeatID(const string& id) {
+    Admin_LinkedQueue adminQueue;
+    readAdminIDsFromFile(adminQueue);
+    admin_n* current = adminQueue.getFront();
+
+    while (current != nullptr) {
+        if (current->name == id) {
+            return true;
+        }
+        current = current->next;
+    }
+
+    if (id == "JW_super_admin_mode") {
+        return true;
+    }
+
+    return false;
+}

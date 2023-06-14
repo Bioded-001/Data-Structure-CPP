@@ -178,24 +178,30 @@ class Admin_mode : protected Movie_management//, protected Food_and_Beverage_man
         system("cls");
         goto admin_menu;
     }
-    void Add_New_SA()
-    {
+    void Add_New_SA() {
         string id, ps, yes;
-        cout<<"Please enter new id want to add : ";
+        cout << "Please enter the new ID you want to add: ";
         getline(cin, id);
-        cout<<"Please enter password of it : ";
+        cout << "Please enter the password for the new ID: ";
         getline(cin, ps);
-        cout<<"ID : "<<id<<endl;
-        cout<<"PS : "<<ps<<endl;
-        cout<<"Do you sure you want to add [yes/no]"<<endl;
+        cout << "ID: " << id << endl;
+        cout << "Password: " << ps << endl;
+        cout << "Are you sure you want to add this ID? [yes/no]: ";
         getline(cin, yes);
         transform(yes.begin(), yes.end(), yes.begin(), ::toupper);
-        if(yes=="YES")
-        {
-            string new_num = Add_New_SA(id, ps);
-            cout<<"This is the new admin account number  :  "<<new_num<<endl;
+        if (yes == "YES" || yes == "Y") {
+            bool isRepeatID = checkRepeatID(id);
+            if (isRepeatID) {
+                cout << "Error: ID already exists." << endl;
+                system("pause");
+            } else {
+                string new_num = Add_New_SA(id, ps);
+                cout << "New admin account number: " << new_num << endl;
+                system("pause");
+            }
         }
     }
+
     string Add_New_SA(string id, string ps) {
         int adminNum;
         string y;
@@ -216,6 +222,7 @@ class Admin_mode : protected Movie_management//, protected Food_and_Beverage_man
 
         return y;
     }
+
 
     ~Admin_mode()
     {
