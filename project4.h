@@ -196,7 +196,7 @@ class Admin_mode : protected Movie_management//, protected Food_and_Beverage_man
             cout<<"This is the new admin account number  :  "<<new_num<<endl;
         }
     }
-   string Add_New_SA(string id, string ps) {
+    string Add_New_SA(string id, string ps) {
         int adminNum;
         string y;
 
