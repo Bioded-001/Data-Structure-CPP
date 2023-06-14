@@ -206,32 +206,34 @@ class movie_page{
     void sel_seat() {
         string sel_seat_id, ticket_in_file, is;
         TicketQueue tic;
-        readTicketsFromFile(tic, movie_sel, sel_time);
+        int maxticket = readTicketsFromFile(tic, movie_sel, sel_time);
+        int maxticket = readTicketsFromFile(tic, movie_sel, sel_time);
+
         do {
             do {
                 // Prompt the user to enter the number of tickets
                 cout << "How many tickets would you like to purchase? : ";
+                cout << "Maximum available tickets: " << maxticket << endl;
                 cin >> num_ticket;
-                fflush(stdin);
-                
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
                 // Check if the input is valid
                 if (cin.fail()) {
-                    num_ticket = 0;
                     cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cout << "Invalid input. Please enter a valid number." << endl;
+                } else if (num_ticket <= 0) {
+                    cout << "Number of tickets must be greater than 0." << endl;
+                } else if (num_ticket > maxticket) {
+                    cout << "Number of tickets cannot exceed the maximum available tickets." << endl;
                 }
-                
-                // Check if the number of tickets is 0
-                if (num_ticket == 0) {
-                    cout << "Number of tickets can't be 0." << endl;
-                }
-            } while (num_ticket == 0);
-            
+            } while (cin.fail() || num_ticket <= 0 || num_ticket > maxticket);
+
             // Ask for confirmation from the user
+            string is;
             cout << "\n\nIs this the number of tickets you want to purchase? [Yes/No] : ";
             getline(cin, is);
             system("cls");
-            
+
             // Check if the input is valid
             if (cin.fail()) {
                 cin.clear();

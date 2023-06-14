@@ -211,10 +211,10 @@ public:
     }
 };
 
-void readTicketsFromFile(TicketQueue& queue, const string& movie_sel, const string& sel_time) {
+int readTicketsFromFile(TicketQueue& queue, const string& movie_sel, const string& sel_time) {
     ifstream ticket_file(("movie storage/Seat/" + movie_sel + "/" + sel_time + " " + movie_sel + ".txt").c_str());
     string ticket_id;
-
+    int maxticket = 0;
     if (!ticket_file) {
         cout << "Error in opening ticket file." << endl;
         return;
@@ -224,9 +224,11 @@ void readTicketsFromFile(TicketQueue& queue, const string& movie_sel, const stri
         ticket_in_move newTicket;
         newTicket.ticket_id = ticket_id;
         queue.enqueue(newTicket);
+        maxticket++;
     }
 
     ticket_file.close();
+    return maxticket;
 }
 
 void readMembersFromFile(LinkedQueue& queue) {
