@@ -14,37 +14,17 @@ class Member
         login_pa:
         int mem_status = 0;
         string none;
-        string login_c;
         string log_password, log_phone;
         system("cls");
         cout << "________________________________________________________________" << endl;
         cout << "\t\t || THE - J W - CINEMA || \t\t" << endl;
         cout << "                          [  LOGIN  ]                           " << endl;
         cout << "________________________________________________________________" << endl;
-        cout << "Login by : " << endl;
-        cout << "1. Name " << endl;
-        cout << "2. Phone number " << endl;
-        cout << "\nPlease enter your choice : ";
-        getline(cin, login_c);
-        if (login_c == "1") {
-            cout << "\nPlease enter your member name : ";
-            getline(cin, log_name);
-            cout << "\nPlease enter password : ";
-            getline(cin, log_password);
-            //log_password = computeHash(log_password); // Encrypt the password
-        }
-        else if (login_c == "2") {
-            cout << "\nPlease enter your member phone number : ";
-            getline(cin, log_phone);
-            cout << "\nPlease enter password : ";
-            getline(cin, log_password);
-            //log_password = computeHash(log_password); // Encrypt the password
-        }
-        else {
-            cout << "Sorry, this is an invalid option. Please try again. " << endl;
-            system("pause");
-            goto login_pa;
-        }
+        cout << "\nPlease enter your member name : ";
+        getline(cin, log_name);
+        cout << "\nPlease enter password : ";
+        getline(cin, log_password);
+        //log_password = computeHash(log_password); // Encrypt the password
         cout << "\nLoading..";
         for (int i = 0; i < 2; i++) {
             sleep(1);
@@ -57,8 +37,7 @@ class Member
         Member_st* frontMember = memberQueue.getFront();
 
         while (frontMember != nullptr) {
-            if ((login_c == "1" && log_name == frontMember->mem_name) ||
-                (login_c == "2" && log_phone == frontMember->mem_phone)) {
+            if ( log_name == frontMember->mem_name) {
                 
                 if (log_password == frontMember->mem_password) {
                     log_name = frontMember->mem_name; //to display name when successful log in

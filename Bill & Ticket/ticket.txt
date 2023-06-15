@@ -2,16 +2,7 @@
 	MOVIE TICKET						   
 	Movie Name : Avatar The Way of Water
 	Movie Time : Morning
-	Movie Seat :	C01
-	Seat Price : RM12.00
-==========================================================
-
-
-==========================================================
-	MOVIE TICKET						   
-	Movie Name : Avatar The Way of Water
-	Movie Time : Morning
-	Movie Seat :	C03
+	Movie Seat :	A01
 	Seat Price : RM19.00
 ==========================================================
 
