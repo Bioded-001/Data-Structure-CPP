@@ -9,8 +9,11 @@ class movie_page{
     string movie_sel, sel_time, *ticket;
     string sel_in_menu;
     bool discount;
+    string name;
+    Movie* now_Showing_Movies;
+    Movie* coming_Soon_Movies;
 	public:
-    movie_page() {
+    movie_page(): now_Showing_Movies(nullptr), coming_Soon_Movies(nullptr) {
         total_p = 0;
 
         // Read the "Now Showing" movie names into a vector
@@ -49,9 +52,12 @@ class movie_page{
         for (int i = 0; i < c; i++) {
             c_soon[i].mv_name = comingSoonMovies[i];
         }
+        now_Showing_Movies = Movie_list(nowShowingMovies);
+        coming_Soon_Movies = Movie_list(comingSoonMovies);
     }
-	int m_menu(bool dis)
+	int m_menu(bool dis, string lname)
 	{
+        name = lname;
         discount= dis;
 		menu_page:
 		cout<<"**************************************** "<<endl;
@@ -96,56 +102,68 @@ class movie_page{
             return 0;
         goto menu_page;
 	}
-	void sel_movie()
-	{
-		sel_movie_page:
+	void sel_movie() {
+        sel_movie_page:
         string is;
-		int m_code;
-		int i;
-		for(i=0;i<n;i++)
-		{
-			cout<<i+1<<" "<<now_s[i].mv_name<<endl;
-		}
-        cout<<i+1<<" "<<"Back To Menu"<<endl;
-		cout<<"\nPlease Enter the Movie Code: ";
-		cin>>m_code;
+        int m_code;
+        int i;
+        Movie* current = now_Showing_Movies;
+
+        cout << "\n==============================================================";
+        cout << "\n||                      Select Movie                        ||";
+        cout << "\n==============================================================";
+        cout << "\n";
+
+        i = 1;
+        while (current != nullptr) {
+            cout << i << " " << current->mv_name << endl;
+            current = current->next;
+            i++;
+        }
+
+        cout << i << " " << "Back To Menu" << endl;
+        cout << "\nPlease Enter the Movie Code: ";
+        cin >> m_code;
         fflush(stdin);
+
         if (cin.fail()) {
-		    m_code = 0;
-		    cin.clear();  // clear the error flags on cin
-		    cin.ignore(numeric_limits<streamsize>::max(), '\n');  // ignore any remaining input
-		}
-        if(m_code>n+1||m_code<1)
-        {
-            cout<<"Invalid choosing !"<<endl;
-			cout<<"Please enter again"<<endl;
+            m_code = 0;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+
+        if (m_code > i || m_code < 1) {
+            cout << "Invalid choice!" << endl;
+            cout << "Please enter again" << endl;
             system("pause");
-		    system("cls");
+            system("cls");
             goto sel_movie_page;
-        }
-        else if(m_code==n+1)
-        {
-            sel_in_menu="4";
-        }
-        else{
-            bool search=movie_searching("Now Showing Movie Name.txt", "movie storage/Now Showing/", now_s[m_code-1].mv_name);
-            if(search)
-            {
-                cout<<"\nIs this the movie you choosing ? [Yes/No] : ";
+        } else if (m_code == i) {
+            sel_in_menu = "4";
+        } else {
+            current = now_Showing_Movies;
+            int count = 1;
+            while (current != nullptr && count != m_code) {
+                current = current->next;
+                count++;
+            }
+            bool search = movie_searching("Now Showing Movie Name.txt", "movie storage/Now Showing/", current->mv_name);
+            if (search) {
+                cout << "\nIs this the movie you choose? [Yes/No]: ";
                 getline(cin, is);
                 system("pause");
                 system("cls");
-                if(is=="Yes"||is=="yes"||is=="Y"||is=="y")
-                {
-                    movie_sel= now_s[m_code-1].mv_name;
+                if (is == "Yes" || is == "yes" || is == "Y" || is == "y") {
+                    movie_sel = current->mv_name;
                     time_s();
                     sel_seat();
-                }else{
-                    sel_in_menu="4";
+                } else {
+                    sel_in_menu = "4";
                 }
             }
         }
-	}
+    }
+
     void time_s()
     {
         while (true) {
@@ -397,12 +415,27 @@ class movie_page{
         ticket_display.close();
         cout<<"\nPlease take your ticket\n";
 	}
+    void history_generate() {
+        if (discount == true) {
+            fstream history_generate(("histoty/" + name + ".txt").c_str(), ios::app);
+            if (!history_generate) {
+                history_generate.open(("histoty/" + name + ".txt").c_str(), ios::out);
+            }
+            auto now = chrono::system_clock::now();
+            time_t now_time = chrono::system_clock::to_time_t(now);
+            history_generate << movie_sel << "---" << sel_time << "---" << num_ticket << "---RM" << fixed << setprecision(2) << total_p << "---" << ctime(&now_time);
+            history_generate.close();
+        }
+    }
+
 	~movie_page()
 	{
 		if(sel_in_menu=="Book Movie" || sel_in_menu=="book movie" || sel_in_menu=="3")
 		{
 			display_bill();
             ticket_generate();
+            history_generate();
+            
 			delete [] tic_p;
 			delete [] ticket;
 			delete [] now_s;
@@ -416,10 +449,10 @@ class movie_page{
 		}
 	}
 };
-void access_movie(bool discount)
+void access_movie(bool discount, string name)
 {
 	movie_page *movie=new movie_page;
-	movie->m_menu(discount);
+	movie->m_menu(discount, name);
 	cout<<"\nLoading..";
     for(int i=0;i<2;i++)
     {

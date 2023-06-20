@@ -7,9 +7,10 @@ class Movie_management
         string movie_name;
         int n,c;
         movies  *now_s, *c_soon;
-    public:
-    Movie_management(){
-
+        Movie* now_Showing_Movies;
+        Movie* coming_Soon_Movies;
+public:
+    Movie_management() : now_Showing_Movies(nullptr), coming_Soon_Movies(nullptr) {
         vector<string> nowShowingMovies;
         ifstream now_showing("Now Showing Movie Name.txt");
         string movieName;
@@ -21,14 +22,8 @@ class Movie_management
         // Sort the Now Showing movies
         selectionSort(nowShowingMovies);
 
-        // Set the size and populate the now_s array
-        n = nowShowingMovies.size();
-        now_s = new movies[n];
-        for (int i = 0; i < n; i++) {
-            now_s[i].mv_name = nowShowingMovies[i];
-        }
+        now_Showing_Movies = Movie_list(nowShowingMovies);
 
-        // Read the "Coming Soon" movie names into a vector
         vector<string> comingSoonMovies;
         ifstream coming_soon("Coming Soon Movie Name.txt");
         while (getline(coming_soon, movieName)) {
@@ -39,12 +34,7 @@ class Movie_management
         // Sort the Coming Soon movies
         selectionSort(comingSoonMovies);
 
-        // Set the size and populate the c_soon array
-        c = comingSoonMovies.size();
-        c_soon = new movies[c];
-        for (int i = 0; i < c; i++) {
-            c_soon[i].mv_name = comingSoonMovies[i];
-        }
+        coming_Soon_Movies = Movie_list(comingSoonMovies);
     }
     void add_or_delete_movie()
     {
@@ -333,11 +323,14 @@ class Movie_management
         cout << "\n==============================================================";
         cout << "\n";
 
-        int i;
-        for (i = 0; i < c; i++) {
-            cout << i + 1 << " " << c_soon[i].mv_name << endl;
+        Movie* current = coming_Soon_Movies;
+        int i = 1;
+        while (current != nullptr) {
+            cout << i << " " << current->mv_name << endl;
+            current = current->next;
+            i++;
         }
-        cout << i + 1 << " " << "Back To Menu" << endl;
+        cout << i << " " << "Back To Menu" << endl;
         cout << "\nPlease enter the movie code you want to delete: ";
         cin >> m_code;
         cout << "\nLoading..";
@@ -354,22 +347,43 @@ class Movie_management
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
 
-        if (m_code > c || m_code < 1) {
+        if (m_code > i || m_code < 1) {
             cout << "Invalid choice!" << endl;
             cout << "Please enter again" << endl;
             system("pause");
             system("cls");
             delete_coming_soon_movie();
-        } else if (m_code == c + 1) {
+        } else if (m_code == i) {
             return;
         } else {
-            string movie_name = c_soon[m_code - 1].mv_name;
+            int count = 1;
+            current = coming_Soon_Movies;
+            Movie* prev = nullptr;
+            while (current != nullptr && count != m_code) {
+                prev = current;
+                current = current->next;
+                count++;
+            }
+            string movie_name = current->mv_name;
             bool searching = movie_searching("Coming Soon Movie Name.txt", "movie storage/Coming Soon/", movie_name);
             if (searching) {
                 fstream movies_file("Coming Soon Movie Name.txt", ios::out);
-                for (i = 0; i < c; i++) {
-                    if (c_soon[i].mv_name != movie_name) {
-                        movies_file << c_soon[i].mv_name << endl;
+                current = coming_Soon_Movies;
+                prev = nullptr;
+                while (current != nullptr) {
+                    if (current->mv_name != movie_name) {
+                        movies_file << current->mv_name << endl;
+                        prev = current;
+                        current = current->next;
+                    } else {
+                        Movie* nextMovie = current->next;
+                        delete current;
+                        current = nextMovie;
+                        if (prev != nullptr) {
+                            prev->next = current;
+                        } else {
+                            coming_Soon_Movies = current;
+                        }
                     }
                 }
                 movies_file.close();
@@ -398,11 +412,14 @@ class Movie_management
         cout << "\n==============================================================";
         cout << "\n";
 
-        int i;
-        for (i = 0; i < n; i++) {
-            cout << i + 1 << " " << now_s[i].mv_name << endl;
+        Movie* current = now_Showing_Movies;
+        int i = 1;
+        while (current != nullptr) {
+            cout << i << " " << current->mv_name << endl;
+            current = current->next;
+            i++;
         }
-        cout << i + 1 << " " << "Back To Menu" << endl;
+        cout << i << " " << "Back To Menu" << endl;
         cout << "\nPlease enter the movie code you want to delete: ";
         cin >> m_code;
         cout << "\nLoading..";
@@ -419,22 +436,43 @@ class Movie_management
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
 
-        if (m_code > n || m_code < 1) {
+        if (m_code > i || m_code < 1) {
             cout << "Invalid choice!" << endl;
             cout << "Please enter again" << endl;
             system("pause");
             system("cls");
             delete_now_showing_movie();
-        } else if (m_code == n + 1) {
+        } else if (m_code == i) {
             return;
         } else {
-            string movie_name = now_s[m_code - 1].mv_name;
+            int count = 1;
+            current = now_Showing_Movies;
+            Movie* prev = nullptr;
+            while (current != nullptr && count != m_code) {
+                prev = current;
+                current = current->next;
+                count++;
+            }
+            string movie_name = current->mv_name;
             bool searching = movie_searching("Now Showing Movie Name.txt", "movie storage/Now Showing/", movie_name);
             if (searching) {
                 fstream movies_file("Now Showing Movie Name.txt", ios::out);
-                for (i = 0; i < n; i++) {
-                    if (now_s[i].mv_name != movie_name) {
-                        movies_file << now_s[i].mv_name << endl;
+                current = now_Showing_Movies;
+                prev = nullptr;
+                while (current != nullptr) {
+                    if (current->mv_name != movie_name) {
+                        movies_file << current->mv_name << endl;
+                        prev = current;
+                        current = current->next;
+                    } else {
+                        Movie* nextMovie = current->next;
+                        delete current;
+                        current = nextMovie;
+                        if (prev != nullptr) {
+                            prev->next = current;
+                        } else {
+                            now_Showing_Movies = current;
+                        }
                     }
                 }
                 movies_file.close();
@@ -455,6 +493,8 @@ class Movie_management
             }
         }
     }
+
+
     void remove_seat() {
         fflush(stdin);
         int m_code;
@@ -463,11 +503,14 @@ class Movie_management
         cout << "\n==============================================================";
         cout << "\n";
 
-        int i;
-        for (i = 0; i < n; i++) {
-            cout << i + 1 << " " << now_s[i].mv_name << endl;
+        Movie* current = now_Showing_Movies;
+        int i = 1;
+        while (current != nullptr) {
+            cout << i << " " << current->mv_name << endl;
+            current = current->next;
+            i++;
         }
-        cout << i + 1 << " " << "Back To Menu" << endl;
+        cout << i << " " << "Back To Menu" << endl;
         cout << "\nPlease enter the movie code you want to remove the seat: ";
         cin >> m_code;
         cout << "\nLoading..";
@@ -484,16 +527,24 @@ class Movie_management
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
 
-        if (m_code > n || m_code < 1) {
+        if (m_code > i || m_code < 1) {
             cout << "Invalid choice!" << endl;
             cout << "Please enter again" << endl;
             system("pause");
             system("cls");
             remove_seat();
-        } else if (m_code == n + 1) {
+        } else if (m_code == i) {
             return;
         } else {
-            string movie_name = now_s[m_code - 1].mv_name;
+            int count = 1;
+            current = now_Showing_Movies;
+            Movie* prev = nullptr;
+            while (current != nullptr && count != m_code) {
+                prev = current;
+                current = current->next;
+                count++;
+            }
+            string movie_name = current->mv_name;
             bool searching = movie_searching("Now Showing Movie Name.txt", "movie storage/Now Showing/", movie_name);
             if (searching) {
                 fstream morning(("movie storage/Seat/" + movie_name + "/Morning " + movie_name + ".txt").c_str(), ios::out);
@@ -515,7 +566,6 @@ class Movie_management
             }
         }
     }
-
 
 
 };

@@ -528,3 +528,32 @@ bool checkRepeatID(const string& id) {
 
     return false;
 }
+
+struct Movie {
+    string mv_name;
+    Movie* next;
+};
+
+Movie* Movie_list(const vector<string>& movies) {
+    Movie* head = nullptr;
+    Movie* current = nullptr;
+
+    for (const string& name : movies) {
+        Movie* newMovie = new Movie{name};
+
+        if (head == nullptr) {
+            head = newMovie;
+            current = newMovie;
+        } else {
+            current->next = newMovie;
+            current = newMovie;
+        }
+    }
+
+    return head;
+}
+
+struct HistoryNode {
+    string line;
+    HistoryNode* next;
+};

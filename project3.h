@@ -92,8 +92,9 @@ class Member
             cout << "2. Search movies for Coming Soon" << endl;
             cout << "3. Search movies for Now Showing" << endl;
             cout << "4. Edit Personal Detail" << endl;
+            cout << "5. History" << endl;
             //cout<<"5. Recommendation"<<endl;
-            cout << "5. Exit" << endl;
+            cout << "6. Exit" << endl;
             cout << "\nPlease enter your selection: ";
             cin >> user_s;
             fflush(stdin);
@@ -107,7 +108,7 @@ class Member
             system("cls");
             fflush(stdin);
             if (user_s == "1")
-                access_movie(true);
+                access_movie(true, log_name);
             /*else if(user_s=="2")
                 access_FnB(true);*/
             else if (user_s == "2") {
@@ -133,9 +134,9 @@ class Member
                     cout << "\nYou can only edit your data next time you log in.\n";
                 }
             }
-            /*else if(user_s=="5")
-                recommendation();*/
-            else if (user_s == "5")
+            else if(user_s=="5")
+                read_history();
+            else if (user_s == "6")
                 break;
             else {
                 cout << "Invalid selection! Please select again." << endl;
@@ -192,8 +193,12 @@ class Member
                 getline(cin, frontMember->mem_email);
                 cout << "Please enter your new member password: ";
                 getline(cin, frontMember->mem_password);
-
+                string new_name = frontMember->mem_name; 
+                string old_file_name = log_name + ".txt";
+                string new_file_name = new_name + ".txt";
+                rename(old_file_name.c_str(), new_file_name.c_str());
                 // Update the member information
+                log_name = new_name;
                 change = true;
                 break;
             }
@@ -228,6 +233,52 @@ class Member
         return false;
     }
 
+public:
+    void read_history() {
+        string filename = "histoty/" + log_name + ".txt";
+        fstream read_history(filename.c_str(), ios::in);
+        
+        if (!read_history) {
+            cout << "No Booking History found." << endl;
+            return;
+        }
+        
+        string line;
+        HistoryNode* head = nullptr;
+        HistoryNode* current = nullptr;
+        
+        // Read each line from the file
+        while (getline(read_history, line)) {
+            // Create a new node
+            HistoryNode* newNode = new HistoryNode;
+            newNode->line = line;
+            newNode->next = nullptr;
+            
+            if (head == nullptr) {
+                // If the linked list is empty, set the new node as the head
+                head = newNode;
+                current = newNode;
+            } else {
+                // Append the new node to the end of the linked list
+                current->next = newNode;
+                current = newNode;
+            }
+        }
+        
+        read_history.close();
+        
+       // Display the history line by line
+        current = head;
+        int lineNumber = 1;  // Initialize line number
+        while (current != nullptr) {
+            cout << lineNumber << ".  " << current->line << endl;
+            lineNumber++;
+            HistoryNode* temp = current;
+            current = current->next;
+            delete temp;  // Free the memory occupied by each node
+        }
+
+    }
 
     ~Member()
     {

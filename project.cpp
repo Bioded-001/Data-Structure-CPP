@@ -30,7 +30,7 @@ void selectpage(string name)
         system("cls");
         fflush(stdin);
         if (user_s == "1")
-            access_movie(false);
+            access_movie(false, "");
         /*else if(user_s=="2")
             access_FnB(false);*/
         else if (user_s == "2") {

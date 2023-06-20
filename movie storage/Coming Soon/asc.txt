@@ -1,4 +1,4 @@
-Movie Name     - a
+Movie Name     - asc
 Release Date   - 
 Genre          - 
 Running Time   - 

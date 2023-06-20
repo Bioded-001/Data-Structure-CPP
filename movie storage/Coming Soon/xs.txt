@@ -1,0 +1,7 @@
+Movie Name     - xs
+Release Date   - xs
+Genre          - xs
+Running Time   - xs
+Classification - xs
+Synopsis       - xs
+                 xs
